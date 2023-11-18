@@ -114,3 +114,37 @@ COPY Tweet (original_username, tweet_id, cntnt, likes, reshares, timestmp) FROM 
 
 -- Populating Reshare Table
 COPY Reshare (resharing_username, tweeting_username, tweet_id) FROM stdin;
+'username2'     'username1'     1
+'username3'     'username1'     1
+'username4'     'username2'     1
+'username6'     'username1'     3
+'username1'     'username4'     1
+'username3'     'username5'     1
+'username5'     'username1'     2
+\.
+
+-- Populating Cmmnt Table
+COPY Cmmnt (commenting_username, tweeting_username, tweet_id, timestmp comment_content) FROM stdin;
+'username1'     'username2'     1       '2023-11-18 15:31:01'       'User 1 commented on User 2s first tweet'
+'username2'     'username1'     3       '2023-11-14 10:01:52'       'User 2 commented on User 1s third tweet'
+'username6'     'username5'     1       '2023-11-17 05:10:18'       'User 6 commented on User 5s first tweet'
+\.
+
+-- Populating Media Table
+COPY Media (username, tweet_id, media_url) FROM stdin;
+
+\.
+
+-- Populating Follow Table
+COPY Follow (follower_username, following_username) FROM stdin;
+'username1'     'username2'
+'username1'     'username3'
+'username1'     'username4'
+'username2'     'username1'
+'username2'     'username4'
+'username3'     'username1'
+'username3'     'username2'
+'username4'     'username1'
+'username4'     'username2'
+'username5'     'username1'
+\.
