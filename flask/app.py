@@ -92,6 +92,80 @@ def create_user():
 
     return redirect(url_for('start_page'))
 
+#NOT DONE YET -> STOPPED HERE
+@app.route('/loadUsersTweet', methods=['GET'])
+def loadUsersTweet():
+    if request.method == 'GET':
+        username = session.get('username')
+        tweet_id = request.form('tweet_id')
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('SELECT * FROM Tweet WHERE original_username = %s AND tweet_id = %i', (username, tweet_id))
+
+            tweet_intermediate = cursor.fetchone()
+            tweet = {
+                        'tweet_id' : tweet_intermediate[0],
+                        'original_username' : tweet_intermediate[1],
+                        'cntnt' : tweet_intermediate[2],
+                        'likes' : tweet_intermediate[3],
+                        'reshares' : tweet_intermediate[4],
+                        'timestmp' : tweet_intermediate[5]
+                    } 
+
+            flash("Tweet Load was successful.", "success")
+
+            return jsonify(tweet)
+        except psycopg2.Error as e:
+            print("Error loading tweet:", e)
+            flash("Error loading tweet", 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
+
+
+#DONE
+@app.route('/loadTweet', methods=['GET'])
+def loadTweet():
+    if request.method == 'GET':
+        username = session.get('username')
+        tweet_id = request.form('tweet_id')
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('SELECT * FROM Tweet WHERE original_username = %s AND tweet_id = %i', (username, tweet_id))
+
+            tweet_intermediate = cursor.fetchone()
+            tweet = {
+                        'tweet_id' : tweet_intermediate[0],
+                        'original_username' : tweet_intermediate[1],
+                        'cntnt' : tweet_intermediate[2],
+                        'likes' : tweet_intermediate[3],
+                        'reshares' : tweet_intermediate[4],
+                        'timestmp' : tweet_intermediate[5]
+                    } 
+
+            flash("Tweet Load was successful.", "success")
+
+            return jsonify(tweet)
+        except psycopg2.Error as e:
+            print("Error loading tweet:", e)
+            flash("Error loading tweet", 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
+
+#DONE
 @app.route('/createComment', methods=['POST'])
 def createComment():
     if request.method == 'POST':
@@ -121,6 +195,7 @@ def createComment():
 
     return redirect(url_for('start_page'))
 
+#DONE
 @app.route('/editComment', methods=['POST'])
 def editComment():
     if request.method == 'POST':
@@ -149,6 +224,7 @@ def editComment():
 
     return redirect(url_for('start_page'))
 
+#DONE
 @app.route('/deleteComment', methods=['POST'])
 def deleteComment():
     if request.method == 'POST':
@@ -170,7 +246,7 @@ def deleteComment():
             print("Error creating user:", e)
             flash('Error creating user', 'error')
 
-
+#DONR
 @app.route('/loadUserComments', methods=['GET'])
 def loadUserComments():
     if request.method == 'GET':
