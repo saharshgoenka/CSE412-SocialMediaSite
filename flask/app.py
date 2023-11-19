@@ -15,11 +15,12 @@ def create_db_connection():
 	return connection
 
 @app.route('/')
-def start_page():
-    return render_template('loadpage.html')     # ASSUMED VARIABLE NAMES
+def startPage():
+    return 'Finally Works'
+    #return render_template('loadpage.html')     # ASSUMED VARIABLE NAMES
 
-@app.route('/login', methods=['POST'])
-def check_credentials():
+@app.route('/login', methods=['POST', 'GET'])
+def checkCredentials():
     if request.method == 'POST':
         username = request.form['username']     # ASSUMED VARIABLE NAMES
         password = request.form['password']     # ASSUMED VARIABLE NAMES
@@ -58,8 +59,8 @@ def check_credentials():
 
     return redirect(url_for('start_page'))
 
-@app.route('/create_user', methods=['POST'])
-def create_user():
+@app.route('/createUser', methods=['POST', 'GET'])
+def createUser():
     if request.method == 'POST':
         #request information from form(user input)
         username = request.form['username']
@@ -84,6 +85,140 @@ def create_user():
         except psycopg2.Error as e:
             print("Error creating user:", e)
             flash('Error creating user', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
+
+@app.route('/editPassword', methods=['POST', 'GET'])
+def editPassword():
+    if request.method == 'POST':
+        #request information from form(user input)
+        username = session.get('username')
+        new_password = request.form['new_password']
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Update the user's password
+            cursor.execute("UPDATE Usr SET password = %s WHERE username = %s", (new_password, username))
+            connection.commit()
+
+            flash('Password updated successfully', 'success')
+
+        except psycopg2.Error as e:
+            print("Error updating password:", e)
+            flash('Error updating password', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
+
+@app.route('/editEmail', methods=['POST', 'GET'])
+def editEmail():
+    if request.method == 'POST':
+        #request information from form(user input)
+        username = session.get('username')
+        new_email = request.form['new_email']
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Update the user's email
+            cursor.execute("UPDATE Usr SET email = %s WHERE username = %s", (new_email, username))
+            connection.commit()
+
+            flash('Email updated successfully', 'success')
+
+        except psycopg2.Error as e:
+            print("Error updating email:", e)
+            flash('Error updating email', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
+
+@app.route('/editDisplayName', methods=['POST', 'GET'])
+def editDisplayName():
+    if request.method == 'POST':
+        #request information from form(user input)
+        username = session.get('username')
+        new_display_name = request.form['new_display_name']
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Update the user's display name
+            cursor.execute("UPDATE Usr SET display_name = %s WHERE username = %s", (new_display_name, username))
+            connection.commit()
+
+            flash('Display Name updated successfully', 'success')
+
+        except psycopg2.Error as e:
+            print("Error updating display name:", e)
+            flash('Error updating display name', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
+
+@app.route('/editPfp', methods=['POST', 'GET'])
+def editPfp():
+    if request.method == 'POST':
+        #request information from form(user input)
+        username = session.get('username')
+        new_pfp_file_path = request.form['new_pfp_file_path']
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Update the user's profile picture
+            cursor.execute("UPDATE Usr SET profile_picture = %s WHERE username = %s", (new_pfp_file_path, username))
+            connection.commit()
+
+            flash('Profile Picture updated successfully', 'success')
+
+        except psycopg2.Error as e:
+            print("Error updating profile picture:", e)
+            flash('Error updating profile picture', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
+
+@app.route('/deleteAccount', methods=['POST', 'GET'])
+def deleteAccount():
+    if request.method == 'POST':
+        #request information from form(user input)
+        username = session.get('username')
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Delete the user's account
+            cursor.execute("DELETE FROM Usr WHERE username = %s", (username))
+            connection.commit()
+
+            flash('Account Deletion was successful', 'success')
+
+        except psycopg2.Error as e:
+            print("Error deleting account:", e)
+            flash('Error deleting account', 'error')
 
         finally:
             cursor.close()
