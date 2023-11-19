@@ -10,7 +10,7 @@ const Tweet = ({ username, displayName, content, timestamp, profilePictureUrl, t
     };
 
     return (
-        <div className="border p-4 my-4 rounded-md bg-white shadow-md">
+        <div className="border p-4 my-4 rounded-md bg-gray-700 text-white shadow-md">
             <div className="flex items-center">
                 <img
                     src={profilePictureUrl}
@@ -19,10 +19,10 @@ const Tweet = ({ username, displayName, content, timestamp, profilePictureUrl, t
                 />
                 <span className="font-bold text-lg">{username}</span>
                 {displayName && (
-                    <span className="ml-2 text-gray-600">({displayName})</span>
+                    <span className="ml-2 text-gray-400">({displayName})</span>
                 )}
             </div>
-            <p className="mt-2">{content}</p>
+            <p className="mt-2 text-gray-300">{content}</p>
             {tweetPictureUrl && (
                 <div className="flex justify-center mt-2">
                     <img
