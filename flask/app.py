@@ -91,5 +91,27 @@ def create_user():
 
     return redirect(url_for('start_page'))
 
+@app.route('/cmmnt', methods=['GET'])
+def loadUserComments():
+    if request.method == 'GET':
+        commenting_username = session.get['username']
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute("SELECT * FROM Cmmnt WHERE commenting_username = %s", commenting_username)
+            comments = cursor.fetchone()
+
+
+        except psycopg2.Error as e:
+            print("Error loading user's comments:", e)
+            flash("Error loading user's comments", 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
 if __name__ == '__main__':
     app.run()
