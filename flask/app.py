@@ -226,5 +226,101 @@ def deleteAccount():
 
     return redirect(url_for('start_page'))
 
+@app.route('/followUser', methods=['POST', 'GET'])
+def followUser():
+    if request.method == 'POST':
+        #request information from form(user input)
+        follower_user = session.get('username')
+        following_user = request.form['following_user']
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Update the follow table to add follow tuple
+            cursor.execute("INSERT INTO Follow VALUES (%s, %s)", (follower_user, following_user))
+            connection.commit()
+
+            flash('Follow was successful', 'success')
+
+        except psycopg2.Error as e:
+            print("Error following user:", e)
+            flash('Error following user', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
+
+@app.route('/unfollowUser', methods=['POST', 'GET'])
+def unfollowUser():
+    if request.method == 'POST':
+        #request information from form(user input)
+        unfollower_user = session.get('username')
+        unfollowing_user = request.form['unfollowing_user']
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Update follow table to remove follow tuplle
+            cursor.execute("DELETE FROM Follow follower_username = %s AND following_username = %s", 
+                           (unfollower_user, unfollowing_user))
+            connection.commit()
+
+            flash('Unfollow was successful', 'success')
+
+        except psycopg2.Error as e:
+            print("Error unfollowing user:", e)
+            flash('Error unfollowing user', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
+
+@app.route('/lookUpUser', methods=['POST', 'GET'])
+def lookUpUser(username):
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Update follow table to remove follow tuplle
+        cursor.execute("""
+            SELECT username, password, account_creation_date, email, display_name,
+                    profile_picture, birthday
+            FROM Usr
+            WHERE username = %s""", 
+            (username,))
+
+        user_details = cursor.fetchone()
+
+        if user_details:
+            username, password, creation_date, email, display_name, profile_picture, birthday = user_details
+            result = {
+                'username': username,
+                'password': password,
+                'account_creation_date': str(creation_date),
+                'email': email,
+                'display_name': display_name,
+                'profile_picture': profile_picture,
+                'birthday': str(birthday)
+            }
+            return jsonify(result)
+        else:
+            return None  # User not found
+
+
+    except psycopg2.Error as e:
+        print("Error looking up user:", e)
+        flash('User does not exist', 'error')
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
 if __name__ == '__main__':
     app.run()
