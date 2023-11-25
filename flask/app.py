@@ -1,5 +1,7 @@
-from flask import Flask, Response, url_for, redirect, render_template, request, session, flash, jsonify
 import psycopg2
+from datetime import datetime
+from flask import Flask, Response, url_for, redirect, render_template, request, session, flash, jsonify
+from psycopg2 import extras
 
 app = Flask(__name__)
 
@@ -320,6 +322,50 @@ def lookUpUser(username):
     finally:
         cursor.close()
         connection.close()
+
+@app.route('/createTweet', methods=['POST', 'GET'])
+def createTweet():
+    if request.method == 'POST':
+        #request information from form(user input)
+        username = session.get('username')
+        content = request.form['password']
+        likes = 0
+        reshares = 0
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Get the maximum tweet_id for the user
+            cursor.execute("SELECT MAX(tweet_id) FROM Tweet WHERE username = %s", (username,))
+            max_tweet_id = cursor.fetchone()[0]
+
+            # Increment tweet_id by 1
+            if max_tweet_id is not None:
+                tweet_id = max_tweet_id + 1
+            else:
+                tweet_id = 0  # if the user has no previous tweets
+
+            # Get current timestamp
+            timestamp = datetime.now()
+
+            # Insert the new user into the database
+            cursor.execute("INSERT INTO Tweet VALUES (%s, %s, %s, %s, %s, %s)",
+                           (username, tweet_id, content, likes, reshares, timestamp))
+            connection.commit()
+
+            flash('User created successfully', 'success')
+
+        except psycopg2.Error as e:
+            print("Error creating tweet:", e)
+            flash('Error creating tweet', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
+
 
 
 if __name__ == '__main__':
