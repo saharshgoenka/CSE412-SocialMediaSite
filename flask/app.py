@@ -31,7 +31,7 @@ def check_credentials():
         try:
             # Retrieve the user's information based on the provided username
             cursor.execute("SELECT username, password FROM Usr WHERE username = %s", (username,))
-            user = cursor.fetchone()
+            user = cursor.fetchall()
 
             errors = {'username': True, 'password': True}
 
@@ -92,32 +92,32 @@ def create_user():
 
     return redirect(url_for('start_page'))
 
-#NOT DONE YET -> STOPPED HERE
+#NOT DONE YET 
 @app.route('/loadUsersTweet', methods=['GET'])
 def loadUsersTweet():
     if request.method == 'GET':
-        username = session.get('username')
-        tweet_id = request.form('tweet_id')
+        username = request.form('username')
 
         connection = create_db_connection()
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT * FROM Tweet WHERE original_username = %s AND tweet_id = %i', (username, tweet_id))
+            cursor.execute('SELECT * FROM Tweet WHERE original_username = %s', (username))
 
-            tweet_intermediate = cursor.fetchone()
-            tweet = {
-                        'tweet_id' : tweet_intermediate[0],
-                        'original_username' : tweet_intermediate[1],
-                        'cntnt' : tweet_intermediate[2],
-                        'likes' : tweet_intermediate[3],
-                        'reshares' : tweet_intermediate[4],
-                        'timestmp' : tweet_intermediate[5]
-                    } 
+            # Returns a table containing all tweets associated to the specified user
+            tweet_intermediate = cursor.fetchall()
+            # tweet = {
+            #             'tweet_id' : tweet_intermediate[0],
+            #             'original_username' : tweet_intermediate[1],
+            #             'cntnt' : tweet_intermediate[2],
+            #             'likes' : tweet_intermediate[3],
+            #             'reshares' : tweet_intermediate[4],
+            #             'timestmp' : tweet_intermediate[5]
+            #         } 
 
             flash("Tweet Load was successful.", "success")
 
-            return jsonify(tweet)
+            # return jsonify(tweet)
         except psycopg2.Error as e:
             print("Error loading tweet:", e)
             flash("Error loading tweet", 'error')
@@ -127,7 +127,6 @@ def loadUsersTweet():
             connection.close()
 
     return redirect(url_for('start_page'))
-
 
 #DONE
 @app.route('/loadTweet', methods=['GET'])
@@ -142,7 +141,7 @@ def loadTweet():
         try:
             cursor.execute('SELECT * FROM Tweet WHERE original_username = %s AND tweet_id = %i', (username, tweet_id))
 
-            tweet_intermediate = cursor.fetchone()
+            tweet_intermediate = cursor.fetchall()
             tweet = {
                         'tweet_id' : tweet_intermediate[0],
                         'original_username' : tweet_intermediate[1],
@@ -257,7 +256,7 @@ def loadUserComments():
 
         try:
             cursor.execute("SELECT * FROM Cmmnt WHERE commenting_username = %s", (commenting_username))
-            comments = cursor.fetchone()
+            comments = cursor.fetchall()
 
             cmmnt = {
                         'commenting_username' : comments[0],
