@@ -1,0 +1,1 @@
+/Library/PostgreSQL/15/bin/postgres "-D" "/Users/mitsuakifukuzaki/Desktop/Hub/Programming/School/412/CSE412-SocialMediaSite/database" "-k" "/tmp"
