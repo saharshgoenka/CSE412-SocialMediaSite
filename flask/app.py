@@ -283,7 +283,7 @@ def unfollowUser():
 
     return redirect(url_for('start_page'))
 
-@app.route('/lookUpUser', methods=['POST', 'GET'])
+@app.route('/lookUpUser/<string:username>', methods=['POST', 'GET'])
 def lookUpUser(username):
     connection = create_db_connection()
     cursor = connection.cursor()
@@ -323,12 +323,14 @@ def lookUpUser(username):
         cursor.close()
         connection.close()
 
+    return redirect(url_for('start_page'))
+
 @app.route('/createTweet', methods=['POST', 'GET'])
 def createTweet():
     if request.method == 'POST':
         #request information from form(user input)
         username = session.get('username')
-        content = request.form['password']
+        content = request.form['content']
         likes = 0
         reshares = 0
 
@@ -366,7 +368,37 @@ def createTweet():
 
     return redirect(url_for('start_page'))
 
+@app.route('/deleteTweet/<int:tweet_id>', methods=['POST', 'GET'])
+def deleteTweet(tweet_id):
+    if request.method == 'POST':
+        username = session.get('username')
 
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Check if the tweet belongs to the logged-in user
+            cursor.execute("SELECT username FROM Tweet WHERE tweet_id = %s", (tweet_id,))
+            tweet_owner = cursor.fetchone()
+
+            if tweet_owner and tweet_owner[0] == username:
+                # Delete the tweet
+                cursor.execute("DELETE FROM Tweet WHERE tweet_id = %s", (tweet_id,))
+                connection.commit()
+
+                flash('Tweet deleted successfully', 'success')
+            else:
+                flash('Unauthorized to delete this tweet', 'error')
+
+        except psycopg2.Error as e:
+            print("Error deleting tweet:", e)
+            flash('Error deleting tweet', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('start_page'))
 
 if __name__ == '__main__':
     app.run()
