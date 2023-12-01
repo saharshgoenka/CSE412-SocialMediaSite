@@ -17,11 +17,11 @@ path:
 
 setup_postgres:
 	@echo "creating tables"
-	psql -d $(USER) -q -f setup.sql
+	psql -d $(USER) -q -f /Users/mitsuakifukuzaki/Desktop/Hub/Programming/School/412/CSE412-SocialMediaSite/init_db/setup.sql
 
 clean_postgres:
 	@echo "dropping tables"
-	psql -d $(USER) -q -f clean.sql
+	psql -d $(USER) -q -f /Users/mitsuakifukuzaki/Desktop/Hub/Programming/School/412/CSE412-SocialMediaSite/init_db/clean.sql
 
 
 .PHONY: setup_postgres
