@@ -3,6 +3,7 @@ import psycopg2
 import datetime
 
 app = Flask(__name__)
+app.secret_key = "secret_key"
 
 def create_db_connection():
 	connection = psycopg2.connect(
@@ -17,13 +18,13 @@ def create_db_connection():
 def start_page():
     return render_template('loadpage.html')
 
-@app.route('/test', methods=['GET'])
-def test():
+@app.route('/test/<string:username>', methods=['GET'])
+def test(username):
     connection = create_db_connection()
     cursor = connection.cursor()
 
     try:
-        cursor.execute("SELECT * FROM Usr ")
+        cursor.execute("SELECT * FROM Usr WHERE username = %s", (username, ))
         users = cursor.fetchall()
 
         formatted_users = {}
@@ -31,7 +32,7 @@ def test():
         for user in users:
             formatted_users[user[0]] = user
 
-        return jsonify(formatted_users)
+        return jsonify(users)
     except psycopg2.Error as e:
         print("Error:", e)
         flash('Error', 'error')
@@ -110,16 +111,16 @@ def create_user():
     return redirect(url_for('start_page'))
 
 #NOT DONE YET 
-@app.route('/loadUsersTweet/<string:username>', methods=['GET'])
+@app.route('/loadUsersTweet/<string:username>', methods=['GET', 'POST'])
 def loadUsersTweet(username):
-    if request.method == 'GET':
+    if request.method == 'POST' | request.method == 'GET':
         # username = request.form('username')
 
         connection = create_db_connection()
         cursor = connection.cursor()
 
         try:
-            cursor.execute('SELECT * FROM Tweet WHERE original_username = %s', (username))
+            cursor.execute('SELECT * FROM Tweet WHERE original_username = %s', (username, ))
 
             # Returns a table containing all tweets associated to the specified user
             tweet_intermediate = cursor.fetchall()
