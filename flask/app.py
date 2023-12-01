@@ -129,7 +129,7 @@ def loadUsersTweet():
     return redirect(url_for('start_page'))
 
 #DONE
-@app.route('/loadTweet', methods=['GET'])
+@app.route('/loadTweet/<string>:username', methods=['GET'])
 def loadTweet():
     if request.method == 'GET':
         username = session.get('username')
@@ -245,7 +245,7 @@ def deleteComment():
             print("Error creating user:", e)
             flash('Error creating user', 'error')
 
-#DONR
+#DONE
 @app.route('/loadUserComments', methods=['GET'])
 def loadUserComments():
     if request.method == 'GET':
