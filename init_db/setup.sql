@@ -165,6 +165,8 @@ INSERT INTO Cmmnt (commenting_username, tweeting_username, tweet_id, timestmp, c
 VALUES ('username6', 'username5', 1, '2023-11-17 05:10:18', 'User 6 commented on User 5''s first tweet');
 
 -- Populating Media Table
+INSERT INTO Media (username, tweet_id, media_url)
+VALUES ('username1', 1, "fpath to a file")
 
 -- Populating Follow Table
 INSERT INTO Follow (follower_username, following_username)

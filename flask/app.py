@@ -59,7 +59,7 @@ def check_credentials():
 
     return redirect(url_for('start_page'))
 
-@app.route('/create_user', methods=['POST'])
+@app.route('/create_user/<string:username>/<string:password>/<string:email>/', methods=['POST'])
 def create_user():
     if request.method == 'POST':
         #request information from form(user input)
@@ -93,10 +93,10 @@ def create_user():
     return redirect(url_for('start_page'))
 
 #NOT DONE YET 
-@app.route('/loadUsersTweet', methods=['GET'])
-def loadUsersTweet():
+@app.route('/loadUsersTweet/<string:username>', methods=['GET'])
+def loadUsersTweet(username):
     if request.method == 'GET':
-        username = request.form('username')
+        # username = request.form('username')
 
         connection = create_db_connection()
         cursor = connection.cursor()
@@ -129,9 +129,12 @@ def loadUsersTweet():
     return redirect(url_for('start_page'))
 
 #DONE
-@app.route('/loadTweet/<string:username, int:tweet_id>', methods=['GET'])
-def loadTweet():
+@app.route('/loadTweet/<string:username>/<int:tweet_id>', methods=['GET'])
+def loadTweet(username, tweet_id):
     if request.method == 'GET':
+        # username = request.form('username')
+        # tweet_id = request.form('tweet_id')
+
         connection = create_db_connection()
         cursor = connection.cursor()
 
