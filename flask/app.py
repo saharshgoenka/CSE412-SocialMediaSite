@@ -129,12 +129,9 @@ def loadUsersTweet():
     return redirect(url_for('start_page'))
 
 #DONE
-@app.route('/loadTweet/<string>:username', methods=['GET'])
+@app.route('/loadTweet/<string:username, int:tweet_id>', methods=['GET'])
 def loadTweet():
     if request.method == 'GET':
-        username = session.get('username')
-        tweet_id = request.form('tweet_id')
-
         connection = create_db_connection()
         cursor = connection.cursor()
 
