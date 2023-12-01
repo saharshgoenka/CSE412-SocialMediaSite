@@ -5,19 +5,36 @@ import datetime
 app = Flask(__name__)
 
 def create_db_connection():
-	role = open('../role.txt').readline().strip()
 	connection = psycopg2.connect(
-		user=role,
-		password="root",
+        user='mitsuakifukuzaki',
 		host="/tmp",
-		port="1323",
-		database="dbsms"
+		port="8888",
+		database="mitsuakifukuzaki"
 	)
 	return connection
 
 @app.route('/')
 def start_page():
     return render_template('loadpage.html')
+
+@app.route('/test', methods=['GET'])
+def test():
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("SELECT * FROM Usr ")
+        users = cursor.fetchall()
+
+        formatted_users = {}
+
+        for user in users:
+            formatted_users[user[0]] = user
+
+        return jsonify(formatted_users)
+    except psycopg2.Error as e:
+        print("Error:", e)
+        flash('Error', 'error')
 
 @app.route('/login', methods=['POST'])
 def check_credentials():
