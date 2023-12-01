@@ -5,11 +5,14 @@ from psycopg2 import extras
 
 app = Flask(__name__)
 
+# Set a secret key for the session
+app.secret_key = 'your_secret_key_here'
+
 def create_db_connection():
 	connection = psycopg2.connect(
         user='enigma',
 		host="/tmp",
-		port="8884",
+		port="1322",
 		database="enigma"
 	)
 	return connection
@@ -37,18 +40,18 @@ def test():
         print("Error:", e)
         flash('Error', 'error')
 
-@app.route('/login', methods=['POST', 'GET'])
-def checkCredentials():
-    if request.method == 'POST':
-        username = request.form['username']     # ASSUMED VARIABLE NAMES
-        password = request.form['password']     # ASSUMED VARIABLE NAMES
+@app.route('/login/<string:username>/<string:password>', methods=['POST', 'GET'])
+def checkCredentials(username, password):
+    if request.method == 'POST' or request.method == 'GET':
+        #username = request.form['username']     # ASSUMED VARIABLE NAMES
+        #password = request.form['password']     # ASSUMED VARIABLE NAMES
 
         connection = create_db_connection()
         cursor = connection.cursor()
 
         try:
             # Retrieve the user's information based on the provided username
-            cursor.execute("SELECT username, password FROM Usr WHERE username = %s", (username,))
+            cursor.execute("SELECT username, password FROM Usr WHERE username = %s", (username, ))
             user = cursor.fetchone()
 
             errors = {'username': True, 'password': True}
@@ -63,7 +66,8 @@ def checkCredentials():
             # Handle the result as needed
             if not any(errors.values()):
                 session['username'] = username
-                return redirect(url_for('home'))   # ASSUMED VARIABLE NAMES
+                return "WORKS"
+                #return redirect(url_for('home'))   # ASSUMED VARIABLE NAMES
             else:
                 flash('Invalid username or password', 'error')
 
@@ -75,7 +79,8 @@ def checkCredentials():
             cursor.close()
             connection.close()
 
-    return redirect(url_for('start_page'))
+    return "NOT WORKS"
+    #return redirect(url_for('start_page'))
 
 @app.route('/createUser', methods=['POST', 'GET'])
 def createUser():
