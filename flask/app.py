@@ -9,7 +9,7 @@ def create_db_connection():
 	connection = psycopg2.connect(
 		user=role,
 		password="root",
-		host="localhost",
+		host="/tmp",
 		port="1323",
 		database="dbsms"
 	)
