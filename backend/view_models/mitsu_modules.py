@@ -2,7 +2,7 @@ from models import Comment
 from models.Tweet import Tweet
 from models.Comment import Comment
 import psycopg2
-import datetime
+from datetime import datetime
 
 def create_db_connection():
 	connection = psycopg2.connect(
@@ -18,7 +18,8 @@ def createComment(commenting_username:str, tweeting_username:str, tweet_ID:int, 
     cursor = connection.cursor()
 
     try:
-        timestmp = 
+        timestmp_intermediate = datetime.now()
+        timestmp = timestmp_intermediate.strftime("%Y-%m-%d %H:%M:%S")
         cursor.execute("UPDATE Cmmnt SET comment_content = %s WHERE commenting_username = %s AND tweeting_username = %s AND tweet_id = %s AND timestmp = %s", (commenting_username, tweeting_username, tweet_ID, timestmp, comment_content))
     
     except psycopg2.Error as e:
