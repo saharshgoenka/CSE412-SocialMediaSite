@@ -19,7 +19,7 @@ def print_all_users():
     cursor = connection.cursor()
 
     try:
-        # Retrieve all tuples from the Usr table
+        # Retrieve all tuples from the Usr tablea
         cursor.execute("SELECT * FROM Usr")
         users = cursor.fetchall()
 
