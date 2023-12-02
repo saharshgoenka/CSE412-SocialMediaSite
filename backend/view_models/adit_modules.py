@@ -214,3 +214,29 @@ def editPfp(new_pfp_file_path):
         connection.commit()
         cursor.close()
         connection.close()
+
+#TODO: add a confirmation message before calling delete Account
+#TODO: after deleting account, redirect to login page
+def deleteAccount():
+    global current_user
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Delete user account
+        cursor.execute("DELETE FROM Usr WHERE username = %s", (current_user, ))
+        connection.commit()
+
+        print('Account Deletion was successful')
+        return True
+
+    except psycopg2.Error as e:
+        print("Failed to delete account:", e)
+        return False
+
+    finally:
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+print_all_users()
