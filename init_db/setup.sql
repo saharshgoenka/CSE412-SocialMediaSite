@@ -164,6 +164,12 @@ VALUES ('username2', 'username1', 3, '2023-11-14 10:01:52', 'User 2 commented on
 INSERT INTO Cmmnt (commenting_username, tweeting_username, tweet_id, timestmp, comment_content)
 VALUES ('username6', 'username5', 1, '2023-11-17 05:10:18', 'User 6 commented on User 5''s first tweet');
 
+INSERT INTO Cmmnt (commenting_username, tweeting_username, tweet_id, timestmp, comment_content)
+VALUES ('username1', 'username2', 2, '2023-11-17 05:10:18', 'User 1 commented on User 2''s second tweet');
+
+INSERT INTO Cmmnt (commenting_username, tweeting_username, tweet_id, timestmp, comment_content)
+VALUES ('username2', 'username1', 1, '2023-11-16 05:12:18', 'User 2 commented on User 1''s second tweet');
+
 -- Populating Media Table
 INSERT INTO Media (username, tweet_id, media_url)
 VALUES ('username1', 1, 'fpath to a file');
