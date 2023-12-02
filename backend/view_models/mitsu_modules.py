@@ -13,6 +13,32 @@ def create_db_connection():
 	)
 	return connection
 
+def loadTweet(original_username:str, tweet_ID:int):
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("SELECT * FROM Tweet WHERE original_username = %s AND tweet_id = %s", (original_username, tweet_ID))
+        tweet_intermediate = cursor.fetchall()
+
+        tweet = Tweet(
+            original_username=tweet_intermediate[0][0],
+            tweet_id=tweet_intermediate[0][1],
+            cntnt=tweet_intermediate[0][2],
+            likes=tweet_intermediate[0][3],
+            reshares=tweet_intermediate[0][4],
+            timestmp=tweet_intermediate[0][5]
+        )
+        
+        return tweet
+    
+    except psycopg2.Error as e:
+        print("Error:", e)
+    finally:
+        connection.commit();
+        cursor.close()
+        connection.close()
+
 def createComment(commenting_username:str, tweeting_username:str, tweet_ID:int, comment_content:str):
     connection = create_db_connection()
     cursor = connection.cursor()
@@ -90,3 +116,5 @@ def loadUsersComments(commenting_username:str):
         connection.commit()
         cursor.close()
         connection.close()
+
+loadTweet('username1', 1)
