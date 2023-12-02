@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+backend/view_models/models/__pycache__
+venv
+.idea
+backend/__pycache__
