@@ -5,6 +5,8 @@ from models.User import User
 from models.Tweet import Tweet
 from models.Comment import Comment
 
+current_user = None # Global variable to store the current user
+
 def create_db_connection():
 	connection = psycopg2.connect(
         user='enigma',
@@ -19,7 +21,7 @@ def print_all_users():
     cursor = connection.cursor()
 
     try:
-        # Retrieve all tuples from the Usr tablea
+        # Retrieve all tuples from the Usr table
         cursor.execute("SELECT * FROM Usr")
         users = cursor.fetchall()
 
@@ -35,8 +37,10 @@ def print_all_users():
         cursor.close()
         connection.close()
 
+#TODO: add a global variable that stores the current user
 #login function that checks if username and password matches database tuple
-def check_credentials(username, password):
+def checkCredentials(username, password):
+    global current_user  # Reference the global variable
     connection = create_db_connection()
     cursor = connection.cursor()
 
@@ -47,6 +51,8 @@ def check_credentials(username, password):
 
         # Check if the user exists and the password is correct
         if user and user[1] == password:  # Note: Index 1 corresponds to the password field in the tuple
+            # Set the current_user global variable after successful login
+            current_user = username
             return True  # Credentials match an existing user
 
     except psycopg2.Error as e:
@@ -68,7 +74,7 @@ def is_valid_email(email):
 
 #function that creates a new user
 #REMEMBER TO call create user with birthday in the form: birthday = date(1999, 1, 1)
-def create_user(username, password, email, display_name, profile_picture, birthday):
+def createUser(username, password, email, display_name, profile_picture, birthday):
     connection = create_db_connection()
     cursor = connection.cursor()
 
@@ -110,3 +116,101 @@ def create_user(username, password, email, display_name, profile_picture, birthd
         connection.close()
 
     return True
+
+#function that edits the current users password
+def editPassword(new_password):
+    global current_user
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Update the user's password
+        cursor.execute("UPDATE Usr SET password = %s WHERE username = %s", (new_password, current_user))
+        connection.commit()
+
+        print('Password updated successfully')
+        return True
+
+    except psycopg2.Error as e:
+        print("Error updating password:", e)
+        return False
+
+    finally:
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+#function that edits the current users email
+def editEmail(new_email):
+    global current_user
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        if not is_valid_email(new_email):
+            return False
+        
+        # Update the user's email
+        cursor.execute("UPDATE Usr SET email = %s WHERE username = %s", (new_email, current_user))
+        connection.commit()
+
+        print('Email updated successfully')
+        return True
+
+    except psycopg2.Error as e:
+        print("Error updating email:", e)
+        return False
+
+    finally:
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+#function that edits the current users display name
+def editDisplayName(new_display_name):
+    global current_user
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Update the user's display name
+        cursor.execute("UPDATE Usr SET display_name = %s WHERE username = %s", (new_display_name, current_user))
+        connection.commit()
+
+        print('Display Name updated successfully')
+        return True
+
+    except psycopg2.Error as e:
+        print("Error updating display name:", e)
+        return False
+
+    finally:
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+#function that edits the current users pfp
+def editPfp(new_pfp_file_path):
+    global current_user
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        if not (new_pfp_file_path.endswith('.png') or new_pfp_file_path.endswith('.jpg')):
+            return False
+        
+        # Update the user's profile picture
+        cursor.execute("UPDATE Usr SET profile_picture = %s WHERE username = %s", (new_pfp_file_path, current_user))
+        connection.commit()
+
+        print('Profile Picture updated successfully')
+        return True
+
+    except psycopg2.Error as e:
+        print("Error updating profile picture:", e)
+        return False
+
+    finally:
+        connection.commit()
+        cursor.close()
+        connection.close()
