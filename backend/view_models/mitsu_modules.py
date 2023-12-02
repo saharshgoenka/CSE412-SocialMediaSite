@@ -12,11 +12,19 @@ def create_db_connection():
 	)
 	return connection
 
-def createUser():
-    cmmnt = Comment( 'usename1', 'username2', 1, '1', 'test')
+def deleteComment(commenting_username:str, tweeting_username:str, tweet_ID:int, timestamp:str):
+    connection = create_db_connection()
+    cursor = connection.cursor()
 
-    print(cmmnt.commenting_username)
-
+    try:
+        cursor.execute("DELETE FROM Cmmnt WHERE commenting_username = %s AND tweeting_username = %s AND tweet_id = %s AND timestmp = %s", (commenting_username, tweeting_username, tweet_ID, timestamp))
+    
+    except psycopg2.Error as e:
+        print("Error:", e)
+    finally:
+        connection.commit();
+        cursor.close()
+        connection.close()
 
 def loadUsersComments(commenting_username:str):
     connection = create_db_connection()
@@ -42,9 +50,12 @@ def loadUsersComments(commenting_username:str):
             
             comment_list.append(new_comment)
 
-        return comment_list
+        print(len(comment_list))
             
     except psycopg2.Error as e:
         print("Error:", e)
+    finally:
+        connection.commit()
+        cursor.close()
+        connection.close()
 
-loadUsersComments('username1')
