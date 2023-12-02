@@ -2,6 +2,7 @@ from models import Comment
 from models.Tweet import Tweet
 from models.Comment import Comment
 import psycopg2
+import datetime
 
 def create_db_connection():
 	connection = psycopg2.connect(
@@ -11,6 +12,21 @@ def create_db_connection():
 		database="mitsuakifukuzaki"
 	)
 	return connection
+
+def createComment(commenting_username:str, tweeting_username:str, tweet_ID:int, comment_content:str):
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        timestmp = 
+        cursor.execute("UPDATE Cmmnt SET comment_content = %s WHERE commenting_username = %s AND tweeting_username = %s AND tweet_id = %s AND timestmp = %s", (commenting_username, tweeting_username, tweet_ID, timestmp, comment_content))
+    
+    except psycopg2.Error as e:
+        print("Error:", e)
+    finally:
+        connection.commit();
+        cursor.close()
+        connection.close()
 
 def editComment(commenting_username:str, tweeting_username:str, tweet_ID:int, timestamp:str, new_content:str):
     connection = create_db_connection()
@@ -72,5 +88,3 @@ def loadUsersComments(commenting_username:str):
         connection.commit()
         cursor.close()
         connection.close()
-
-editComment('username1', 'username5', 1, '2023-11-17 05:10:18', 'User 1 commented on User 5\'s first tweet')
