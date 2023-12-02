@@ -19,9 +19,9 @@ def createComment(commenting_username:str, tweeting_username:str, tweet_ID:int, 
 
     try:
         timestmp_intermediate = datetime.now()
-        
         timestmp = timestmp_intermediate.strftime("%Y-%m-%d %H:%M:%S")
-        cursor.execute("UPDATE Cmmnt SET comment_content = %s WHERE commenting_username = %s AND tweeting_username = %s AND tweet_id = %s AND timestmp = %s", (commenting_username, tweeting_username, tweet_ID, timestmp, comment_content))
+
+        cursor.execute("INSERT INTO Cmmnt(commenting_username, tweeting_username, tweet_id, timestmp, comment_content) VALUES (%s, %s, %s, %s, %s);", (commenting_username, tweeting_username, tweet_ID, timestmp, comment_content))
     
     except psycopg2.Error as e:
         print("Error:", e)
