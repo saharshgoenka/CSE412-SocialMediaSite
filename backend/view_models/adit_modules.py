@@ -5,7 +5,7 @@ from models.User import User
 from models.Tweet import Tweet
 from models.Comment import Comment
 
-current_user = None # Global variable to store the current user
+current_user = "username1" # Global variable to store the current user
 
 def create_db_connection():
 	connection = psycopg2.connect(
@@ -37,9 +37,30 @@ def print_all_users():
         cursor.close()
         connection.close()
 
+def print_all_follows():
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Retrieve all tuples from the Follow table
+        cursor.execute("SELECT * FROM Follow")
+        users = cursor.fetchall()
+
+        # Print each tuple
+        for user in users:
+            print(user)
+
+    except psycopg2.Error as e:
+        print("Error retrieving follows:", e)
+
+    finally:
+        connection.commit()
+        cursor.close()
+        connection.close()
+
 #TODO: add a global variable that stores the current user
 #login function that checks if username and password matches database tuple
-def checkCredentials(username, password):
+def checkCredentials(username: str, password: str):
     global current_user  # Reference the global variable
     connection = create_db_connection()
     cursor = connection.cursor()
@@ -65,24 +86,21 @@ def checkCredentials(username, password):
     return False  # Credentials do not match an existing user
 
 #Helper function that checks if email address is in correct form
-def is_valid_email(email):
+def is_valid_email(email: str):
     # Define a regular expression pattern for a basic email format
     email_pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
 
     # Use re.match to check if the email matches the pattern
     return re.match(email_pattern, email) is not None
 
+#NOTE: TO call create user with birthday in the form: birthday = date(1999, 1, 1)
 #function that creates a new user
-#REMEMBER TO call create user with birthday in the form: birthday = date(1999, 1, 1)
-def createUser(username, password, email, display_name, profile_picture, birthday):
+def createUser(username: str, password: str, email: str, display_name: str, profile_picture: str, birthday: str):
     connection = create_db_connection()
     cursor = connection.cursor()
 
     try:
         # Type and format checks
-        if not all(isinstance(arg, str) for arg in [username, password, email, display_name, profile_picture]):
-            raise ValueError("Invalid input types")
-
         if not is_valid_email(email):
             raise ValueError("Invalid email format")
 
@@ -118,7 +136,7 @@ def createUser(username, password, email, display_name, profile_picture, birthda
     return True
 
 #function that edits the current users password
-def editPassword(new_password):
+def editPassword(new_password: str):
     global current_user
     connection = create_db_connection()
     cursor = connection.cursor()
@@ -141,7 +159,7 @@ def editPassword(new_password):
         connection.close()
 
 #function that edits the current users email
-def editEmail(new_email):
+def editEmail(new_email: str):
     global current_user
     connection = create_db_connection()
     cursor = connection.cursor()
@@ -167,7 +185,7 @@ def editEmail(new_email):
         connection.close()
 
 #function that edits the current users display name
-def editDisplayName(new_display_name):
+def editDisplayName(new_display_name: str):
     global current_user
     connection = create_db_connection()
     cursor = connection.cursor()
@@ -190,7 +208,7 @@ def editDisplayName(new_display_name):
         connection.close()
 
 #function that edits the current users pfp
-def editPfp(new_pfp_file_path):
+def editPfp(new_pfp_file_path: str):
     global current_user
     connection = create_db_connection()
     cursor = connection.cursor()
@@ -233,6 +251,53 @@ def deleteAccount():
 
     except psycopg2.Error as e:
         print("Failed to delete account:", e)
+        return False
+
+    finally:
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+# function that allows user 1 to follow user 2
+def followUser(following_user: str):
+    global current_user
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Update the follow table to add a follow tuple
+        cursor.execute("INSERT INTO Follow VALUES (%s, %s)", (current_user, following_user))
+        connection.commit()
+
+        print('Follow was successful')
+        return True
+
+    except psycopg2.Error as e:
+        print("Error following user:", e)
+        return False
+
+    finally:
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+# function that allows user 1 to unfollows user 2
+def unfollow_user(unfollowing_user: str):
+    global current_user
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Update the follow table to remove a follow tuple
+        cursor.execute("DELETE FROM Follow WHERE follower_username = %s AND following_username = %s", 
+                       (current_user, unfollowing_user))
+        connection.commit()
+
+        print('Unfollow was successful')
+        return True
+
+    except psycopg2.Error as e:
+        print("Error unfollowing user:", e)
         return False
 
     finally:
