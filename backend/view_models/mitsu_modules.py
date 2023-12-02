@@ -13,6 +13,44 @@ def create_db_connection():
 	)
 	return connection
 
+def loadUserTweets(original_username:str):
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("SELECT * FROM Tweet WHERE original_username = %s", (original_username, ))
+        tweets = cursor.fetchall()
+
+        tweet_list = []
+        for tweet in tweets:
+            original_username_temp = tweet[0],
+            tweet_ID_temp          = tweet[1],
+            cntnt_temp             = tweet[2],
+            likes_temp             = tweet[3],
+            reshares_temp          = tweet[4],
+            timestmp_temp          = tweet[5]
+
+            new_tweet = Tweet(
+                                original_username= original_username_temp,
+                                tweet_id         = tweet_ID_temp,
+                                cntnt            = cntnt_temp,
+                                likes            = likes_temp,
+                                reshares         = reshares_temp,
+                                timestmp         = timestmp_temp
+                             )
+            
+            tweet_list.append(new_tweet)
+
+        print(len(tweet_list))
+        return tweet_list
+            
+    except psycopg2.Error as e:
+        print("Error:", e)
+    finally:
+        connection.commit()
+        cursor.close()
+        connection.close()
+
 def loadTweet(original_username:str, tweet_ID:int):
     connection = create_db_connection()
     cursor = connection.cursor()
@@ -84,7 +122,7 @@ def deleteComment(commenting_username:str, tweeting_username:str, tweet_ID:int, 
         cursor.close()
         connection.close()
 
-def loadUsersComments(commenting_username:str):
+def loadUserComments(commenting_username:str):
     connection = create_db_connection()
     cursor = connection.cursor()
 
@@ -100,15 +138,18 @@ def loadUsersComments(commenting_username:str):
             timestmp_temp            = comment[3]
             comment_content_temp     = comment[4]
 
-            new_comment = Comment(commenting_username=commenting_username_temp,
-                                  tweeting_username=tweeting_username_temp,
-                                  tweet_id=tweet_id_temp,
-                                  timestmp=timestmp_temp,
-                                  comment_content=comment_content_temp)
+            new_comment = Comment(
+                                    commenting_username= commenting_username_temp,
+                                    tweeting_username  = tweeting_username_temp,
+                                    tweet_id           = tweet_id_temp,
+                                    timestmp           = timestmp_temp,
+                                    comment_content    = comment_content_temp
+                                )
             
             comment_list.append(new_comment)
 
         print(len(comment_list))
+        return comment_list
             
     except psycopg2.Error as e:
         print("Error:", e)
@@ -117,4 +158,4 @@ def loadUsersComments(commenting_username:str):
         cursor.close()
         connection.close()
 
-loadTweet('username1', 1)
+loadUserTweets('username1')
