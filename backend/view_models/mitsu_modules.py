@@ -12,6 +12,20 @@ def create_db_connection():
 	)
 	return connection
 
+def editComment(commenting_username:str, tweeting_username:str, tweet_ID:int, timestamp:str, new_content:str):
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("UPDATE Cmmnt SET comment_content = %s WHERE commenting_username = %s AND tweeting_username = %s AND tweet_id = %s AND timestmp = %s", (new_content, commenting_username, tweeting_username, tweet_ID, timestamp))
+    
+    except psycopg2.Error as e:
+        print("Error:", e)
+    finally:
+        connection.commit();
+        cursor.close()
+        connection.close()
+
 def deleteComment(commenting_username:str, tweeting_username:str, tweet_ID:int, timestamp:str):
     connection = create_db_connection()
     cursor = connection.cursor()
@@ -59,3 +73,4 @@ def loadUsersComments(commenting_username:str):
         cursor.close()
         connection.close()
 
+editComment('username1', 'username5', 1, '2023-11-17 05:10:18', 'User 1 commented on User 5\'s first tweet')
