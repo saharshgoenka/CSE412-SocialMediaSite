@@ -217,6 +217,7 @@ def editPfp(new_pfp_file_path):
 
 #TODO: add a confirmation message before calling delete Account
 #TODO: after deleting account, redirect to login page
+#function that deletes the current users account
 def deleteAccount():
     global current_user
     connection = create_db_connection()
@@ -238,5 +239,3 @@ def deleteAccount():
         connection.commit()
         cursor.close()
         connection.close()
-
-print_all_users()
