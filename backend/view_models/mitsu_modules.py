@@ -26,7 +26,24 @@ def loadUsersComments(commenting_username:str):
         cursor.execute("SELECT * FROM Cmmnt WHERE commenting_username = %s", (commenting_username, ))
         comments = cursor.fetchall()
 
-        print(comments)
+        comment_list = []
+        for comment in comments:
+            commenting_username_temp = comment[0]
+            tweeting_username_temp   = comment[1]
+            tweet_id_temp            = comment[2]
+            timestmp_temp            = comment[3]
+            comment_content_temp     = comment[4]
+
+            new_comment = Comment(commenting_username=commenting_username_temp,
+                                  tweeting_username=tweeting_username_temp,
+                                  tweet_id=tweet_id_temp,
+                                  timestmp=timestmp_temp,
+                                  comment_content=comment_content_temp)
+            
+            comment_list.append(new_comment)
+
+        return comment_list
+            
     except psycopg2.Error as e:
         print("Error:", e)
 
