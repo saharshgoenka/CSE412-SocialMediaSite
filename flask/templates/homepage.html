@@ -168,6 +168,8 @@
         </form>
     </div>
 
+    <div id="error-message" style="color: red;"></div>
+
     <h2>Your Tweets</h2>
     <ul>
         {% for tweet in tweets %}
@@ -273,7 +275,12 @@
             // Update the reshare count on the front-end
             document.querySelector(`#reshareCount${tweetId}`).textContent = data.reshares;
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+
+            // Display the error message on the front-end
+            document.getElementById('error-message').textContent = 'Error resharing tweet. You may have already reshared this tweet.';
+        });
     }
 </script>
 

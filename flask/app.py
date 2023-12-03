@@ -111,7 +111,7 @@ def homepage():
             user_details = cursor.fetchone()
 
             # Select all tweets from the Tweet table
-            cursor.execute("SELECT original_username, tweet_id, cntnt, likes, reshares, timestmp FROM Tweet")
+            cursor.execute("SELECT original_username, tweet_id, cntnt, likes, reshares, timestmp FROM Tweet Order By timestmp DESC")
             tweets = cursor.fetchall()
 
             return render_template('homepage.html', username=session['username'], user_details=user_details,
@@ -394,6 +394,19 @@ def reshareTweet(tweet_id, username):
     cursor = connection.cursor()
 
     try:
+        # Check if the user has already reshared the tweet
+        cursor.execute("SELECT * FROM Reshare WHERE resharing_username = %s AND tweeting_username = %s AND tweet_id = %s",
+                       (session['username'], username, tweet_id))
+        existing_reshare = cursor.fetchone()
+
+        if existing_reshare:
+            return jsonify({'error': 'You have already reshared this tweet'}), 400
+
+        # Insert the reshare record into the database
+        cursor.execute("INSERT INTO Reshare VALUES (%s, %s, %s)",
+                       (session['username'], username, tweet_id))
+        connection.commit()
+
         # Update the reshare count in the database
         cursor.execute("UPDATE Tweet SET reshares = reshares + 1 WHERE tweet_id = %s AND original_username = %s",
                        (tweet_id, username))
