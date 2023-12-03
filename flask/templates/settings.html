@@ -1,12 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Add necessary head content if any -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            max-width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        #delete-account {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Add this line */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            max-width: 100%;
+        }
+
+        #delete-account h3 {
+            color: #333;
+        }
+
+        #delete-account p {
+            margin-bottom: 10px;
+        }
+
+        #delete-account input[type="submit"] {
+            background-color: #ff4d4d;
+        }
+
+        #delete-account input[type="submit"]:hover {
+            background-color: #e63946;
+        }
+
+        }
+    </style>
 </head>
 <body>
 <h1>User Settings</h1>
 
 <p>Edit your settings here:</p>
+
+<div id="back-btn">
+        <a href="{{ url_for('homepage') }}">Back to Homepage</a>
+    </div>
 
 <form method="post" action="{{ url_for('updateSettings') }}">
     <label for="new_password">New Password:</label>

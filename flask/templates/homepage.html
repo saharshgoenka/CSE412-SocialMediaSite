@@ -1,5 +1,3 @@
-<!-- templates/homepage.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +10,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /*height: 100vh;*/
             margin: 0;
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f4; /* Light gray background */
@@ -149,10 +146,9 @@
     <div id="profile-dropdown" class="dropdown">
         <button onclick="toggleDropdown()" class="profile-button">
             {% if user_details and user_details[5] %}
-            <img src="{{ url_for('static', filename=user_details[5]) }}" alt="Profile Image" class="profile-image">
+                <img id="profile-image" src="{{ url_for('static', filename=user_details[5]) }}" alt="Profile Image" class="profile-image">
             {% else %}
-            <img src="{{ url_for('static', filename='static/profile_picture.jpg') }}"
-                 alt="Default Profile Image" class="profile-image">
+                <img id="profile-image" src="{{ url_for('static', filename='images/profile_picture.jpg') }}" alt="Default Profile Image" class="profile-image">
             {% endif %}
         </button>
         <div id="dropdown-content" class="dropdown-content">
@@ -161,9 +157,6 @@
     </div>
 
     <h1>Welcome to the Homepage, {{ username }}!</h1>
-    <!-- Add the button below the profile image -->
-
-    <!--        <h1>Welcome to the Homepage, {{ username }}!</h1>-->
 
     <div id="tweet-form">
         <h3>Create a New Tweet</h3>
@@ -187,13 +180,11 @@
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                 <div>
-                    <img src="{{ url_for('static', filename='images/like_icon2.jpg') }}" alt="Likes Icon"
-                         style="width: 20px; height: 20px; margin-right: 5px;">
+                    <img src="{{ url_for('static', filename='images/like_icon2.jpg') }}" alt="Likes Icon" style="width: 20px; height: 20px; margin-right: 5px;">
                     {{ tweet[3] }}
                 </div>
                 <div>
-                    <img src="{{ url_for('static', filename='images/reshare_icon2.jpg') }}" alt="Reshares Icon"
-                         style="width: 25px; height: 25px; margin-right: 5px;">
+                    <img src="{{ url_for('static', filename='images/reshare_icon2.jpg') }}" alt="Reshares Icon" style="width: 25px; height: 25px; margin-right: 5px;">
                     {{ tweet[4] }}
                 </div>
             </div>
@@ -229,6 +220,11 @@
             }
         }
     }
+
+    // Handle the error event for the profile image
+    document.getElementById('profile-image').onerror = function() {
+        this.src = '{{ url_for('static', filename='images/profile_picture.jpg') }}';
+    };
 </script>
 
 </body>

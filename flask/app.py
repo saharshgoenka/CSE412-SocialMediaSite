@@ -3,6 +3,7 @@ from datetime import datetime
 
 import psycopg2
 from flask import Flask, url_for, redirect, render_template, request, session, flash, jsonify
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
