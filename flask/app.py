@@ -2,6 +2,7 @@ import psycopg2
 from datetime import datetime
 from flask import Flask, Response, url_for, redirect, render_template, request, session, flash, jsonify
 from psycopg2 import extras
+import os
 
 app = Flask(__name__)
 
@@ -19,13 +20,16 @@ if not os.path.exists(uploads_dir):
 
 
 def create_db_connection():
-	connection = psycopg2.connect(
-        user='enigma',
-		host="/tmp",
-		port="1321",
-		database="enigma"
-	)
-	return connection
+    connection = psycopg2.connect(
+        user='postgres',
+        host="localhost",
+        port=5439,
+        database="social_media_data"
+    )
+
+    return connection
+
+
 
 
 def allowed_file(filename):
