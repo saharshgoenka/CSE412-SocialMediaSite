@@ -52,27 +52,27 @@
     </style>
 </head>
 <body>
-    <div id="content-container">
-        <div id="tweet-details">
-            <h1>Tweet Details</h1>
-            <p><strong>Username:</strong> {{ tweet[0] }}</p>
-            <p><strong>Content:</strong> {{ tweet[1] }}</p>
-            <p><strong>Likes:</strong> {{ tweet[2] }}</p>
-            <p><strong>Reshares:</strong> {{ tweet[3] }}</p>
-            <p><strong>Timestamp:</strong> {{ tweet[4] }}</p>
+<div id="content-container">
+    <div id="tweet-details">
+        <h1>Tweet Details</h1>
+        <p><strong>Username:</strong> {{ tweet[0] }}</p>
+        <p><strong>Content:</strong> {{ tweet[1] }}</p>
+        <p><strong>Likes:</strong> {{ tweet[2] }}</p>
+        <p><strong>Reshares:</strong> {{ tweet[3] }}</p>
+        <p><strong>Timestamp:</strong> {{ tweet[4] }}</p>
 
-            <h2>Comments</h2>
-            <ul>
-                {% for comment in comments %}
-                    <li>
-                        <p><strong>Username:</strong> {{ comment[0] }}</p>
-                        <p><strong>Content:</strong> {{ comment[1] }}</p>
-                        <p><strong>Timestamp:</strong> {{ comment[2] }}</p>
-                        <hr>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+        <h2>Comments</h2>
+        <ul>
+            {% for comment in comments %}
+            <li>
+                <p><strong>Username:</strong> {{ comment[0] }}</p>
+                <p><strong>Content:</strong> {{ comment[1] }}</p>
+                <p><strong>Timestamp:</strong> {{ comment[2] }}</p>
+                <hr>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
+</div>
 </body>
 </html>

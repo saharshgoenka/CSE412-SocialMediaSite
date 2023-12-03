@@ -1,8 +1,8 @@
-import psycopg2
-from datetime import datetime
-from flask import Flask, Response, url_for, redirect, render_template, request, session, flash, jsonify
-from psycopg2 import extras
 import os
+from datetime import datetime
+
+import psycopg2
+from flask import Flask, url_for, redirect, render_template, request, session, flash, jsonify
 
 app = Flask(__name__)
 
@@ -28,8 +28,6 @@ def create_db_connection():
     )
 
     return connection
-
-
 
 
 def allowed_file(filename):
@@ -115,7 +113,8 @@ def homepage():
             cursor.execute("SELECT original_username, tweet_id, cntnt, likes, reshares, timestmp FROM Tweet")
             tweets = cursor.fetchall()
 
-            return render_template('homepage.html', username=session['username'], user_details=user_details, tweets=tweets)
+            return render_template('homepage.html', username=session['username'], user_details=user_details,
+                                   tweets=tweets)
 
         except psycopg2.Error as e:
             print("Error fetching data:", e)
@@ -163,8 +162,10 @@ def tweet_details(tweet_id, username):
         cursor.close()
         connection.close()
 
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/createUser', methods=['POST', 'GET'])
 def createUser():
@@ -531,6 +532,7 @@ def deleteTweet(tweet_id):
 
     return redirect(url_for('start_page'))
 
+
 # Add a new route for the settings page
 @app.route('/settings')
 def settings_page():
@@ -568,6 +570,7 @@ def editSettings():
 
     return redirect(url_for('settings_page'))
 
+
 # Add a new route and functions for editing settings
 @app.route('/updateSettings', methods=['POST'])
 def updateSettings():
@@ -600,6 +603,7 @@ def updateSettings():
             connection.close()
 
     return redirect(url_for('settings_page'))
+
 
 if __name__ == '__main__':
     app.run()
