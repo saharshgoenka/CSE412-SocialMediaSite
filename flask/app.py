@@ -22,10 +22,10 @@ if not os.path.exists(uploads_dir):
 
 def create_db_connection():
     connection = psycopg2.connect(
-        user='postgres',
-        host="localhost",
-        port=5439,
-        database="social_media_data"
+        user='enigma',
+        host="/tmp",
+        port="1321",
+        database="enigma"
     )
 
     return connection
@@ -176,7 +176,6 @@ def createUser():
         password = request.form['password']
         email = request.form['email']
         display_name = request.form['display_name']
-        pfp_filepath = request.form['pfp_filepath']
         birthday = request.form['birthday']
 
         connection = create_db_connection()
@@ -189,12 +188,17 @@ def createUser():
                     filename = secure_filename(pfp_file.filename)
                     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                     pfp_file.save(filepath)
+
+                    # Store only the relative path in the database
+                    profile_picture_path = f'uploads/{filename}'
+
                 else:
                     flash('Invalid file format for profile picture. Allowed formats: png, jpg, jpeg, gif', 'error')
                     return redirect(url_for('signup'))
 
-            # Store only the relative path in the database
-            profile_picture_path = f'uploads/{filename}' if 'pfp_file' in request.files else 'default_profile.jpg'
+            else:
+                # Use a default profile picture if no file is provided
+                profile_picture_path = 'default_picture.jpeg'
 
             # Insert the new user into the database with the profile picture filepath
             cursor.execute("INSERT INTO Usr (username, password, email, display_name, profile_picture, birthday) "
@@ -356,6 +360,59 @@ def deleteAccount():
 
     return redirect(url_for('start_page'))
 
+@app.route('/likeTweet/<int:tweet_id>/<string:username>', methods=['POST'])
+def likeTweet(tweet_id, username):
+
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Update the like count in the database
+        cursor.execute("UPDATE Tweet SET likes = likes + 1 WHERE tweet_id = %s AND original_username = %s",
+                       (tweet_id, username))
+        connection.commit()
+        print("likeTweet: like count updated")
+
+        # Retrieve the updated like count
+        cursor.execute("SELECT likes FROM Tweet WHERE tweet_id = %s AND original_username = %s",
+                       (tweet_id, username))
+        updated_likes = cursor.fetchone()[0]
+
+        return jsonify({'likes': updated_likes})
+
+    except psycopg2.Error as e:
+        print("Error liking tweet:", e)
+        return jsonify({'error': 'Error liking tweet'}), 500
+
+    finally:
+        cursor.close()
+        connection.close()
+
+@app.route('/reshareTweet/<int:tweet_id>/<string:username>', methods=['POST'])
+def reshareTweet(tweet_id, username):
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Update the reshare count in the database
+        cursor.execute("UPDATE Tweet SET reshares = reshares + 1 WHERE tweet_id = %s AND original_username = %s",
+                       (tweet_id, username))
+        connection.commit()
+
+        # Retrieve the updated reshare count
+        cursor.execute("SELECT reshares FROM Tweet WHERE tweet_id = %s AND original_username = %s",
+                       (tweet_id, username))
+        updated_reshares = cursor.fetchone()[0]
+
+        return jsonify({'reshares': updated_reshares})
+
+    except psycopg2.Error as e:
+        print("Error resharing tweet:", e)
+        return jsonify({'error': 'Error resharing tweet'}), 500
+
+    finally:
+        cursor.close()
+        connection.close()
 
 @app.route('/followUser', methods=['POST', 'GET'])
 def followUser():

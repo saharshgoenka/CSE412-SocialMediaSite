@@ -180,12 +180,18 @@
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                 <div>
-                    <img src="{{ url_for('static', filename='images/like_icon2.jpg') }}" alt="Likes Icon" style="width: 20px; height: 20px; margin-right: 5px;">
-                    {{ tweet[3] }}
+                    <!-- Updated: Like button -->
+                    <button onclick="likeTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
+                        <img src="{{ url_for('static', filename='images/like_icon2.jpg') }}" alt="Likes Icon" style="width: 20px; height: 20px; margin-right: 5px;">
+                        <span id="likeCount{{ tweet[1] }}">{{ tweet[3] }}</span>
+                    </button>
                 </div>
                 <div>
-                    <img src="{{ url_for('static', filename='images/reshare_icon2.jpg') }}" alt="Reshares Icon" style="width: 25px; height: 25px; margin-right: 5px;">
-                    {{ tweet[4] }}
+                    <!-- Updated: Reshare button -->
+                    <button onclick="reshareTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
+                        <img src="{{ url_for('static', filename='images/reshare_icon2.jpg') }}" alt="Reshares Icon" style="width: 25px; height: 25px; margin-right: 5px;">
+                        <span id="reshareCount{{ tweet[1] }}">{{ tweet[4] }}</span>
+                    </button>
                 </div>
             </div>
             <div style="margin-top: 10px;">
@@ -223,8 +229,52 @@
 
     // Handle the error event for the profile image
     document.getElementById('profile-image').onerror = function() {
-        this.src = '{{ url_for('static', filename='images/profile_picture.jpg') }}';
+        this.src = "{{ url_for('static', filename='images/profile_picture.jpg') }}";
     };
+
+    function likeTweet(tweetId, username) {
+        // Handle the logic for liking a tweet
+        // Example using fetch API:
+        fetch(`/likeTweet/${tweetId}/${username}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Update the like count on the front-end
+            document.querySelector(`#likeCount${tweetId}`).textContent = data.likes;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function reshareTweet(tweetId, username) {
+        // Handle the logic for resharing a tweet
+        // Example using fetch API:
+        fetch(`/reshareTweet/${tweetId}/${username}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Update the reshare count on the front-end
+            document.querySelector(`#reshareCount${tweetId}`).textContent = data.reshares;
+        })
+        .catch(error => console.error('Error:', error));
+    }
 </script>
 
 </body>
