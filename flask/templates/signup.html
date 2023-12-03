@@ -74,7 +74,7 @@
 </head>
 <body>
     <h1>Sign Up</h1>
-    <form method="POST" action="{{ url_for('createUser') }}">
+    <form method="POST" action="{{ url_for('createUser') }}" enctype="multipart/form-data">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
 
@@ -87,8 +87,8 @@
         <label for="display_name">Display Name:</label>
         <input type="text" id="display_name" name="display_name" required><br>
 
-        <label for="pfp_filepath">Profile Picture Filepath:</label>
-        <input type="text" id="pfp_filepath" name="pfp_filepath" required><br>
+        <label for="pfp_file">Profile Picture:</label>
+        <input type="file" id="pfp_file" name="pfp_file" accept="image/*" required><br>
 
         <label for="birthday">Birthday:</label>
         <input type="date" id="birthday" name="birthday" required><br>

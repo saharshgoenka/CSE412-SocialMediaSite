@@ -1,27 +1,44 @@
-import psycopg2
+import os
 from datetime import datetime
-from flask import Flask, Response, url_for, redirect, render_template, request, session, flash, jsonify
-from psycopg2 import extras
+
+import psycopg2
+from flask import Flask, render_template, request, session, flash, redirect, url_for, jsonify
+from psycopg2 import extras, connect
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
 # Set a secret key for the session
 app.secret_key = 'your_secret_key_here'
 
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), UPLOAD_FOLDER)
+
+# Ensure the 'uploads' directory exists
+uploads_dir = os.path.join(os.getcwd(), UPLOAD_FOLDER)
+if not os.path.exists(uploads_dir):
+    os.makedirs(uploads_dir)
+
 
 def create_db_connection():
-	connection = psycopg2.connect(
-        user='enigma',
-		host="/tmp",
-		port="1321",
-		database="enigma"
-	)
-	return connection
+    connection = connect(
+        user='postgres',
+        host="localhost",
+        port=5439,
+        database="social_media_data"
+    )
+    return connection
 
-# root
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 @app.route('/')
 def start_page():
     return render_template('login.html')
+
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -41,6 +58,7 @@ def test():
     except psycopg2.Error as e:
         print("Error:", e)
         flash('Error', 'error')
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -88,15 +106,19 @@ def homepage():
         cursor = connection.cursor()
 
         try:
+            # Retrieve user details for the profile dropdown
+            cursor.execute("SELECT * FROM Usr WHERE username = %s", (session['username'],))
+            user_details = cursor.fetchone()
+
             # Select all tweets from the Tweet table
             cursor.execute("SELECT original_username, tweet_id, cntnt, likes, reshares, timestmp FROM Tweet")
             tweets = cursor.fetchall()
 
-            return render_template('homepage.html', username=session['username'], tweets=tweets)
+            return render_template('homepage.html', username=session['username'], user_details=user_details, tweets=tweets)
 
         except psycopg2.Error as e:
-            print("Error fetching tweets:", e)
-            flash('Error fetching tweets', 'error')
+            print("Error fetching data:", e)
+            flash('Error fetching data', 'error')
 
         finally:
             cursor.close()
@@ -106,9 +128,11 @@ def homepage():
         flash('You must log in first', 'error')
         return redirect(url_for('start_page'))
 
+
 @app.route('/signup', methods=['GET'])
 def signup():
     return render_template('signup.html')
+
 
 @app.route('/tweet_details/<int:tweet_id>/<string:username>')
 def tweet_details(tweet_id, username):
@@ -138,26 +162,39 @@ def tweet_details(tweet_id, username):
         cursor.close()
         connection.close()
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/createUser', methods=['POST', 'GET'])
 def createUser():
     if request.method == 'POST':
-        # request information from form(user input)
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
         display_name = request.form['display_name']
-        pfp_filepath = request.form['pfp_filepath']
         birthday = request.form['birthday']
 
         connection = create_db_connection()
         cursor = connection.cursor()
 
         try:
-            # Insert the new user into the database
+            if 'pfp_file' in request.files:
+                pfp_file = request.files['pfp_file']
+                if pfp_file and allowed_file(pfp_file.filename):
+                    filename = secure_filename(pfp_file.filename)
+                    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    pfp_file.save(filepath)
+                else:
+                    flash('Invalid file format for profile picture. Allowed formats: png, jpg, jpeg, gif', 'error')
+                    return redirect(url_for('signup'))
+
+            # Store only the relative path in the database
+            profile_picture_path = f'uploads/{filename}' if 'pfp_file' in request.files else 'default_profile.jpg'
+
+            # Insert the new user into the database with the profile picture filepath
             cursor.execute("INSERT INTO Usr (username, password, email, display_name, profile_picture, birthday) "
                            "VALUES (%s, %s, %s, %s, %s, %s)",
-                           (username, password, email, display_name, pfp_filepath, birthday))
+                           (username, password, email, display_name, profile_picture_path, birthday))
             connection.commit()
 
             flash('User created successfully', 'success')
@@ -487,6 +524,7 @@ def deleteTweet(tweet_id):
             connection.close()
 
     return redirect(url_for('start_page'))
+
 
 # Add a new route for the settings page
 @app.route('/settings')

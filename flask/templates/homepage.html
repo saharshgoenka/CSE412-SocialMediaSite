@@ -145,77 +145,84 @@
     </style>
 </head>
 <body>
-    <div id="content-container">
-        <div id="profile-dropdown" class="dropdown">
-            <button onclick="toggleDropdown()" class="profile-button">
-                <img src="{{ url_for('static', filename='images/profile_picture.jpg') }}" alt="Profile Image" class="profile-image">
-            </button>
-            <div id="dropdown-content" class="dropdown-content">
-                <a href="{{ url_for('settings_page') }}">Settings</a>
-            </div>
+<div id="content-container">
+    <div id="profile-dropdown" class="dropdown">
+        <button onclick="toggleDropdown()" class="profile-button">
+            {% if user_details and user_details[5] %}
+            <img src="{{ url_for('static', filename=user_details[5]) }}" alt="Profile Image" class="profile-image">
+            {% else %}
+            <img src="{{ url_for('static', filename='static/profile_picture.jpg') }}"
+                 alt="Default Profile Image" class="profile-image">
+            {% endif %}
+        </button>
+        <div id="dropdown-content" class="dropdown-content">
+            <a href="{{ url_for('settings_page') }}">Settings</a>
         </div>
-
-        <h1>Welcome to the Homepage, {{ username }}!</h1>
-
-        <div id="tweet-form">
-            <h3>Create a New Tweet</h3>
-            <form method="post" action="{{ url_for('createTweet') }}">
-                <label for="tweet-content">Content:</label>
-                <textarea id="tweet-content" name="content" rows="4" cols="50" required></textarea><br>
-
-                <input type="submit" value="Tweet">
-            </form>
-        </div>
-
-        <h2>Your Tweets</h2>
-        <ul>
-            {% for tweet in tweets %}
-                <li>
-                    <div style="display: flex; align-items: center;">
-                        <strong style="margin-right: 10px;">Username:</strong> {{ tweet[0] }}
-                    </div>
-                    <div style="font-size: 18px; margin: 10px 0;">
-                        <strong>Content:</strong> {{ tweet[2] }}
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                        <div>
-                            <img src="{{ url_for('static', filename='images/like_icon2.jpg') }}" alt="Likes Icon" style="width: 20px; height: 20px; margin-right: 5px;">
-                            {{ tweet[3] }}
-                        </div>
-                        <div>
-                            <img src="{{ url_for('static', filename='images/reshare_icon2.jpg') }}" alt="Reshares Icon" style="width: 25px; height: 25px; margin-right: 5px;">
-                            {{ tweet[4] }}
-                        </div>
-                    </div>
-                    <div style="margin-top: 10px;">
-                        <a href="{{ url_for('tweet_details', tweet_id=tweet[1], username=tweet[0]) }}">View Comments</a>
-                    </div>
-                    <hr>
-                </li>
-            {% endfor %}
-        </ul>
-
-        <p><a href="{{ url_for('start_page') }}">Logout</a></p>
     </div>
 
-    <script>
-        function toggleDropdown() {
-            document.getElementById("dropdown-content").classList.toggle("show");
-        }
+    <h1>Welcome to the Homepage, {{ username }}!</h1>
 
-        window.onclick = function (event) {
-            if (!event.target.matches('.profile-button')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                var i;
-                for (i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
+    <div id="tweet-form">
+        <h3>Create a New Tweet</h3>
+        <form method="post" action="{{ url_for('createTweet') }}">
+            <label for="tweet-content">Content:</label>
+            <textarea id="tweet-content" name="content" rows="4" cols="50" required></textarea><br>
+
+            <input type="submit" value="Tweet">
+        </form>
+    </div>
+
+    <h2>Your Tweets</h2>
+    <ul>
+        {% for tweet in tweets %}
+        <li>
+            <div style="display: flex; align-items: center;">
+                <strong style="margin-right: 10px;">Username:</strong> {{ tweet[0] }}
+            </div>
+            <div style="font-size: 18px; margin: 10px 0;">
+                <strong>Content:</strong> {{ tweet[2] }}
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                <div>
+                    <img src="{{ url_for('static', filename='images/like_icon2.jpg') }}" alt="Likes Icon"
+                         style="width: 20px; height: 20px; margin-right: 5px;">
+                    {{ tweet[3] }}
+                </div>
+                <div>
+                    <img src="{{ url_for('static', filename='images/reshare_icon2.jpg') }}" alt="Reshares Icon"
+                         style="width: 25px; height: 25px; margin-right: 5px;">
+                    {{ tweet[4] }}
+                </div>
+            </div>
+            <div style="margin-top: 10px;">
+                <a href="{{ url_for('tweet_details', tweet_id=tweet[1], username=tweet[0]) }}">View Comments</a>
+            </div>
+            <hr>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <p><a href="{{ url_for('start_page') }}">Logout</a></p>
+</div>
+
+<script>
+    function toggleDropdown() {
+        document.getElementById("dropdown-content").classList.toggle("show");
+    }
+
+    window.onclick = function (event) {
+        if (!event.target.matches('.profile-button')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
                 }
             }
         }
-    </script>
+    }
+</script>
 
 </body>
 </html>
