@@ -11,10 +11,11 @@ app.secret_key = 'your_secret_key_here'
 
 def create_db_connection():
 	connection = psycopg2.connect(
-        user='enigma',
-		host="/tmp",
-		port="1321",
-		database="enigma"
+        user='postgres',
+        password="Ant0n1ng",
+        host="localhost",
+        port=5432,
+        database="CSE412_Project"
 	)
 	return connection
 
@@ -137,7 +138,6 @@ def tweet_details(tweet_id, username):
     finally:
         cursor.close()
         connection.close()
-
 
 @app.route('/createUser', methods=['POST', 'GET'])
 def createUser():
@@ -296,8 +296,11 @@ def deleteAccount():
 
         try:
             # Delete the user's account
-            cursor.execute("DELETE FROM Usr WHERE username = %s", (username))
+            cursor.execute("DELETE FROM Usr WHERE username = %s", (username,))
             connection.commit()
+
+            # Clear session after deleting the account
+            session.pop('username', None)
 
             flash('Account Deletion was successful', 'success')
 
@@ -525,6 +528,38 @@ def editSettings():
 
     return redirect(url_for('settings_page'))
 
+# Add a new route and functions for editing settings
+@app.route('/updateSettings', methods=['POST'])
+def updateSettings():
+    if request.method == 'POST':
+        # Retrieve form data from the request
+        new_password = request.form['new_password']
+        new_email = request.form['new_email']
+        new_display_name = request.form['new_display_name']
+
+        # Get the current username from the session
+        username = session.get('username')
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Update the user's settings in the database
+            cursor.execute("UPDATE Usr SET password = %s, email = %s, display_name = %s WHERE username = %s",
+                           (new_password, new_email, new_display_name, username))
+            connection.commit()
+
+            flash('Settings updated successfully', 'success')
+
+        except psycopg2.Error as e:
+            print("Error updating settings:", e)
+            flash('Error updating settings', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('settings_page'))
 
 if __name__ == '__main__':
     app.run()
