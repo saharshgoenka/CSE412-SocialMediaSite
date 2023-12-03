@@ -12,7 +12,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            /*height: 100vh;*/
             margin: 0;
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f4; /* Light gray background */
@@ -28,26 +28,20 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for a card-like effect */
         }
 
-        h1 {
+        h1, h2, h3 {
             color: #333;
         }
 
-        #tweet-form {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-
-        #tweet-form h3 {
+        p {
             color: #555;
         }
 
-        form {
-            margin-top: 10px;
+        #tweet-form, ul {
+            margin-top: 20px;
+        }
+
+        form, ul {
+            padding: 0;
         }
 
         label {
@@ -72,19 +66,15 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         input[type="submit"]:hover {
             background-color: #45a049;
         }
 
-        h2 {
-            color: #333;
-        }
-
         ul {
             list-style: none;
-            padding: 0;
         }
 
         li {
@@ -109,14 +99,56 @@
         a:hover {
             text-decoration: underline;
         }
+
+        /* Profile dropdown styles */
+        #profile-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .profile-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .profile-image {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 8px;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f9f9f9;
+        }
+
+        .show {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div id="content-container">
-
-    <div id="profile-dropdown" class="dropdown">
+        <div id="profile-dropdown" class="dropdown">
             <button onclick="toggleDropdown()" class="profile-button">
-                <img src="{{ url_for('static', filename='path/to/profile-image.jpg') }}" alt="Profile Image" class="profile-image">
+                <img src="{{ url_for('static', filename='images/profile_picture.jpg') }}" alt="Profile Image" class="profile-image">
             </button>
             <div id="dropdown-content" class="dropdown-content">
                 <a href="{{ url_for('settings_page') }}">Settings</a>
@@ -124,7 +156,6 @@
         </div>
 
         <h1>Welcome to the Homepage, {{ username }}!</h1>
-        <p>This is your personalized homepage.</p>
 
         <div id="tweet-form">
             <h3>Create a New Tweet</h3>
@@ -140,12 +171,25 @@
         <ul>
             {% for tweet in tweets %}
                 <li>
-                    <strong>Username:</strong> {{ tweet[0] }}<br>
-                    <strong>Content:</strong> {{ tweet[2] }}<br>
-                    <strong>Likes:</strong> {{ tweet[3] }}<br>
-                    <strong>Reshares:</strong> {{ tweet[4] }}<br>
-                    <strong>Timestamp:</strong> {{ tweet[5] }}<br>
-                    <a href="{{ url_for('tweet_details', tweet_id=tweet[1], username=tweet[0]) }}">View Comments</a><br>
+                    <div style="display: flex; align-items: center;">
+                        <strong style="margin-right: 10px;">Username:</strong> {{ tweet[0] }}
+                    </div>
+                    <div style="font-size: 18px; margin: 10px 0;">
+                        <strong>Content:</strong> {{ tweet[2] }}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <div>
+                            <img src="{{ url_for('static', filename='images/like_icon.png') }}" alt="Likes Icon" style="width: 20px; height: 20px; margin-right: 5px;">
+                            {{ tweet[3] }}
+                        </div>
+                        <div>
+                            <img src="{{ url_for('static', filename='images/reshare_icon1.jpg') }}" alt="Reshares Icon" style="width: 20px; height: 20px; margin-right: 5px;">
+                            {{ tweet[4] }}
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <a href="{{ url_for('tweet_details', tweet_id=tweet[1], username=tweet[0]) }}">View Comments</a>
+                    </div>
                     <hr>
                 </li>
             {% endfor %}
@@ -154,7 +198,7 @@
         <p><a href="{{ url_for('start_page') }}">Logout</a></p>
     </div>
 
-<script>
+    <script>
         function toggleDropdown() {
             document.getElementById("dropdown-content").classList.toggle("show");
         }
