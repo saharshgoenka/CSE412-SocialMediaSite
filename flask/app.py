@@ -1,10 +1,7 @@
-import os
-from datetime import datetime
-
 import psycopg2
-from flask import Flask, render_template, request, session, flash, redirect, url_for, jsonify
-from psycopg2 import extras, connect
-from werkzeug.utils import secure_filename
+from datetime import datetime
+from flask import Flask, Response, url_for, redirect, render_template, request, session, flash, jsonify
+from psycopg2 import extras
 
 app = Flask(__name__)
 
@@ -22,13 +19,13 @@ if not os.path.exists(uploads_dir):
 
 
 def create_db_connection():
-    connection = connect(
-        user='postgres',
-        host="localhost",
-        port=5439,
-        database="social_media_data"
-    )
-    return connection
+	connection = psycopg2.connect(
+        user='enigma',
+		host="/tmp",
+		port="1321",
+		database="enigma"
+	)
+	return connection
 
 
 def allowed_file(filename):
@@ -168,10 +165,12 @@ def allowed_file(filename):
 @app.route('/createUser', methods=['POST', 'GET'])
 def createUser():
     if request.method == 'POST':
+        # request information from form(user input)
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
         display_name = request.form['display_name']
+        pfp_filepath = request.form['pfp_filepath']
         birthday = request.form['birthday']
 
         connection = create_db_connection()
@@ -333,8 +332,11 @@ def deleteAccount():
 
         try:
             # Delete the user's account
-            cursor.execute("DELETE FROM Usr WHERE username = %s", (username))
+            cursor.execute("DELETE FROM Usr WHERE username = %s", (username,))
             connection.commit()
+
+            # Clear session after deleting the account
+            session.pop('username', None)
 
             flash('Account Deletion was successful', 'success')
 
@@ -525,7 +527,6 @@ def deleteTweet(tweet_id):
 
     return redirect(url_for('start_page'))
 
-
 # Add a new route for the settings page
 @app.route('/settings')
 def settings_page():
@@ -563,6 +564,38 @@ def editSettings():
 
     return redirect(url_for('settings_page'))
 
+# Add a new route and functions for editing settings
+@app.route('/updateSettings', methods=['POST'])
+def updateSettings():
+    if request.method == 'POST':
+        # Retrieve form data from the request
+        new_password = request.form['new_password']
+        new_email = request.form['new_email']
+        new_display_name = request.form['new_display_name']
+
+        # Get the current username from the session
+        username = session.get('username')
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Update the user's settings in the database
+            cursor.execute("UPDATE Usr SET password = %s, email = %s, display_name = %s WHERE username = %s",
+                           (new_password, new_email, new_display_name, username))
+            connection.commit()
+
+            flash('Settings updated successfully', 'success')
+
+        except psycopg2.Error as e:
+            print("Error updating settings:", e)
+            flash('Error updating settings', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('settings_page'))
 
 if __name__ == '__main__':
     app.run()
