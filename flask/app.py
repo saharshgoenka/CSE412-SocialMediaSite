@@ -139,7 +139,6 @@ def tweet_details(tweet_id, username):
         cursor.close()
         connection.close()
 
-
 @app.route('/createUser', methods=['POST', 'GET'])
 def createUser():
     if request.method == 'POST':
@@ -297,8 +296,11 @@ def deleteAccount():
 
         try:
             # Delete the user's account
-            cursor.execute("DELETE FROM Usr WHERE username = %s", (username))
+            cursor.execute("DELETE FROM Usr WHERE username = %s", (username,))
             connection.commit()
+
+            # Clear session after deleting the account
+            session.pop('username', None)
 
             flash('Account Deletion was successful', 'success')
 
