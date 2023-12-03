@@ -141,10 +141,11 @@
             {% for tweet in tweets %}
                 <li>
                     <strong>Username:</strong> {{ tweet[0] }}<br>
-                    <strong>Content:</strong> {{ tweet[1] }}<br>
-                    <strong>Likes:</strong> {{ tweet[2] }}<br>
-                    <strong>Reshares:</strong> {{ tweet[3] }}<br>
-                    <strong>Timestamp:</strong> {{ tweet[4] }}<br>
+                    <strong>Content:</strong> {{ tweet[2] }}<br>
+                    <strong>Likes:</strong> {{ tweet[3] }}<br>
+                    <strong>Reshares:</strong> {{ tweet[4] }}<br>
+                    <strong>Timestamp:</strong> {{ tweet[5] }}<br>
+                    <a href="{{ url_for('tweet_details', tweet_id=tweet[1], username=tweet[0]) }}">View Comments</a><br>
                     <hr>
                 </li>
             {% endfor %}

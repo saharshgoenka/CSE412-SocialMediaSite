@@ -10,22 +10,18 @@ app.secret_key = 'your_secret_key_here'
 
 
 def create_db_connection():
-    connection = psycopg2.connect(
-        user='postgres',
-        host="localhost",
-        port=5439,
-        database="social_media_data"
-    )
-
-    return connection
-
-
+	connection = psycopg2.connect(
+        user='enigma',
+		host="/tmp",
+		port="1321",
+		database="enigma"
+	)
+	return connection
 
 # root
 @app.route('/')
 def start_page():
     return render_template('login.html')
-
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -45,7 +41,6 @@ def test():
     except psycopg2.Error as e:
         print("Error:", e)
         flash('Error', 'error')
-
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -94,7 +89,7 @@ def homepage():
 
         try:
             # Select all tweets from the Tweet table
-            cursor.execute("SELECT original_username, cntnt, likes, reshares, timestmp FROM Tweet")
+            cursor.execute("SELECT original_username, tweet_id, cntnt, likes, reshares, timestmp FROM Tweet")
             tweets = cursor.fetchall()
 
             return render_template('homepage.html', username=session['username'], tweets=tweets)
@@ -114,6 +109,34 @@ def homepage():
 @app.route('/signup', methods=['GET'])
 def signup():
     return render_template('signup.html')
+
+@app.route('/tweet_details/<int:tweet_id>/<string:username>')
+def tweet_details(tweet_id, username):
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Retrieve tweet details
+        cursor.execute("SELECT * FROM Tweet WHERE tweet_id = %s AND original_username = %s", (tweet_id, username))
+        tweet = cursor.fetchone()
+
+        if tweet:
+            # Retrieve comments for the tweet
+            cursor.execute("SELECT * FROM Cmmnt WHERE tweet_id = %s AND tweeting_username = %s", (tweet_id, username))
+            comments = cursor.fetchall()
+
+            return render_template('tweet_details.html', tweet=tweet, comments=comments)
+        else:
+            flash('Tweet not found', 'error')
+            return redirect(url_for('homepage'))
+
+    except psycopg2.Error as e:
+        print("Error fetching tweet details:", e)
+        flash('Error fetching tweet details', 'error')
+
+    finally:
+        cursor.close()
+        connection.close()
 
 
 @app.route('/createUser', methods=['POST', 'GET'])
