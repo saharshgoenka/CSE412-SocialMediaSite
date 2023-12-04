@@ -23,9 +23,10 @@ if not os.path.exists(uploads_dir):
 def create_db_connection():
     connection = psycopg2.connect(
         user='postgres',
+        password="Ant0n1ng",
         host="localhost",
-        port=5439,
-        database="social_media_data"
+        port=5432,
+        database="CSE412_Project"
     )
 
     return connection
@@ -702,7 +703,7 @@ def lookUpUser(username):
 
 
 
-@app.route('/deleteTweet/<int:tweet_id>', methods=['POST', 'GET'])
+@app.route('/deleteTweet/<int:tweet_id>', methods=['POST'])
 def deleteTweet(tweet_id):
     if request.method == 'POST':
         username = session.get('username')
@@ -712,7 +713,7 @@ def deleteTweet(tweet_id):
 
         try:
             # Check if the tweet belongs to the logged-in user
-            cursor.execute("SELECT username FROM Tweet WHERE tweet_id = %s", (tweet_id,))
+            cursor.execute("SELECT original_username FROM Tweet WHERE tweet_id = %s", (tweet_id,))
             tweet_owner = cursor.fetchone()
 
             if tweet_owner and tweet_owner[0] == username:
@@ -732,7 +733,7 @@ def deleteTweet(tweet_id):
             cursor.close()
             connection.close()
 
-    return redirect(url_for('start_page'))
+    return redirect(url_for('homepage'))
 
 
 # Add a new route for the settings page
@@ -805,7 +806,6 @@ def updateSettings():
             connection.close()
 
     return redirect(url_for('settings_page'))
-
 
 if __name__ == '__main__':
     app.run()
