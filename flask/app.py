@@ -22,10 +22,10 @@ if not os.path.exists(uploads_dir):
 
 def create_db_connection():
     connection = psycopg2.connect(
-        user='mitsuakifukuzaki',
+        user='enigma',
         host="/tmp",
-        port="5432",
-        database="mitsuakifukuzaki"
+        port="1322",
+        database="enigma"
     )
 
     return connection
@@ -57,6 +57,30 @@ def test():
         print("Error:", e)
         flash('Error', 'error')
 
+@app.route('/loadUserProfile/<string:username>')
+def loadUserProfile(username):
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Retrieve user details for the profile dropdown
+        cursor.execute("SELECT * FROM Usr WHERE username = %s", (username,))
+        user_details = cursor.fetchone()
+
+        cursor.execute("SELECT * FROM Tweet WHERE original_username = %s", (username,))
+        tweet_details = cursor.fetchall()
+
+        return render_template('profile.html', user_details=user_details, tweet_details=tweet_details)
+
+    except psycopg2.Error as e:
+        print("Error fetching user profile data:", e)
+        flash('Error fetching user profile data', 'error')
+
+    finally:
+        cursor.close()
+        connection.close()
+
+    return render_template('profile.html', user_details=user_details)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -175,6 +199,7 @@ def createUser():
         email = request.form['email']
         display_name = request.form['display_name']
         birthday = request.form['birthday']
+        acc_creation_date = datetime.now()
 
         connection = create_db_connection()
         cursor = connection.cursor()
@@ -199,9 +224,9 @@ def createUser():
                 profile_picture_path = 'default_picture.jpeg'
 
             # Insert the new user into the database with the profile picture filepath
-            cursor.execute("INSERT INTO Usr (username, password, email, display_name, profile_picture, birthday) "
-                           "VALUES (%s, %s, %s, %s, %s, %s)",
-                           (username, password, email, display_name, profile_picture_path, birthday))
+            cursor.execute("INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday) "
+                           "VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                           (username, password, acc_creation_date, email, display_name, profile_picture_path, birthday))
             connection.commit()
 
             flash('User created successfully', 'success')

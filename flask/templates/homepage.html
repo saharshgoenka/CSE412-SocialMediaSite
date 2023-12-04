@@ -173,8 +173,11 @@
         {% for tweet in tweets %}
         <li>
             <div style="display: flex; align-items: center;">
-                <strong style="margin-right: 10px;">Username:</strong> {{ tweet[0] }}
-            </div>
+                <strong style="margin-right: 10px;">Username:</strong>
+                <a href="{{ url_for('loadUserProfile', username=tweet[0]) }}">
+                    {{ tweet[0] }}
+                </a>
+            </div>            
             <div style="font-size: 18px; margin: 10px 0;">
                 <strong>Content:</strong> {{ tweet[2] }}
             </div>
@@ -255,6 +258,7 @@
             return response.json();
         })
         .then(data => {
+            location.reload();
             // Update the like count on the front-end
             document.querySelector(`#likeDislikeCount${tweetId}`).textContent = data.likes;
         })
@@ -277,7 +281,8 @@
             return response.json();
         })
         .then(data => {
-            // Update the like count on the front-end
+            location.reload();
+            // Update the dislike count on the front-end
             document.querySelector(`#likeDislikeCount${tweetId}`).textContent = data.likes;
         })
         .catch(error => console.error('Error:', error));
@@ -299,10 +304,13 @@
             return response.json();
         })
         .then(data => {
+            location.reload();
             // Update the reshare count on the front-end
             document.querySelector(`#reshareCount${tweetId}`).textContent = data.reshares;
         })
+        .catch(error => console.error('Error:', error));
     }
+
 </script>
 
 </body>

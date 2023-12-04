@@ -13,7 +13,7 @@
         }
 
         header {
-            background-color: #00acee;
+            background-color: #4caf50;
             color: #fff;
             padding: 10px;
             text-align: center;
@@ -22,10 +22,15 @@
         main {
             max-width: 600px;
             margin: 20px auto;
+        }
+
+        .profile-container,
+        .tweets-container {
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
+            margin-bottom: 20px;
         }
 
         .profile-header {
@@ -34,14 +39,15 @@
         }
 
         .profile-image {
-            width: 100px;
-            height: 100px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             object-fit: cover;
+            margin-bottom: 20px;
         }
 
         .profile-info {
-            margin-top: 10px;
+            text-align: center;
         }
 
         .profile-info h1 {
@@ -71,25 +77,43 @@
     </header>
 
     <main>
-        <div class="profile-header">
-            <img src="https://placekitten.com/100/100" alt="Profile Image" class="profile-image">
-            <div class="profile-info">
-                <h1>User Name</h1>
-                <p>@username</p>
-                <p>Bio: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <div class="profile-container">
+            <div class="profile-header">
+                <img id="profile-image" src="{{ url_for('static', filename=user_details[5]) }}" alt="Profile Image" class="profile-image">
+                <div class="profile-info">
+                    <h1>{{ user_details[4] }}</h1>
+                    <p>@{{ user_details[0] }}</p>
+                    <p>Account Creation Date: {{ user_details[2] }}</p>
+                    <p>Email: {{ user_details[3] }}</p>
+                    <p>Display Name: {{ user_details[4] }}</p>
+                    <p>Birthday: {{ user_details[6] }}</p>
+                </div>
             </div>
         </div>
 
-        <div class="tweet">
-            <p>This is a sample tweet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. #TwitterClone</p>
+        <div class="tweets-container">
+            <h2 style="text-align: center;">Your Tweets</h2>
+            <ul>
+                {% for tweet in tweet_details %}
+                <li>        
+                    <div style="font-size: 18px; margin: 10px 0;">
+                        <strong>Content:</strong> {{ tweet[2] }}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <div>
+                            <!-- Like count -->
+                            <span>Likes: <span id="likeCount{{ tweet[1] }}">{{ tweet[3] }}</span></span>
+                        </div>
+                        <div>
+                            <!-- Reshare count -->
+                            <span>Reshares: <span id="reshareCount{{ tweet[1] }}">{{ tweet[4] }}</span></span>
+                        </div>
+                    </div>                     
+                    <hr>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
-
-        <div class="tweet">
-            <p>Another tweet goes here. #WebDevelopment</p>
-        </div>
-        
-        <!-- Add more tweets as needed -->
-
     </main>
 
 </body>
