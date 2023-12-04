@@ -13,7 +13,7 @@
         }
 
         header {
-            background-color: #01b8d4;
+            background-color: #1DA1F2;
             color: #fff;
             padding: 10px;
             text-align: center;
@@ -25,10 +25,20 @@
         }
 
         .follow-button {
-            background-color: #01b8d4;
+            background-color: #1DA1F2;
             color: #fff;
             padding: 8px 16px;
             border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .unfollow-button {
+            background-color: #1DA1F2;
+            color: #fff;
+            padding: 8px 16px;
+            border: 2px solid #1DA1F2;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -114,8 +124,14 @@
                         <strong>Content:</strong> {{ tweet[2] }}
                     </div>
                     {% if follower_details['showButton'] %}
-                        <button id="followButton" onclick="followUser()" class="follow-button">
+                        <button onclick="followUser()" class="follow-button">
                             Follow
+                        </button>
+                    {% endif %}
+
+                    {% if not follower_details['showButton'] %}
+                        <button  onclick="unFollowUser()" class="unfollow-button">
+                            Unfollow
                         </button>
                     {% endif %}
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
@@ -133,22 +149,6 @@
                 {% endfor %}
             </ul>
         </div>
-
-        <!-- <script>
-            const shouldShowButton = follower_details['showButton'];
-
-            // Get the button element by its id
-            const button = document.getElementById('followButton');
-
-            // Check the boolean value and toggle the button's visibility
-            if (shouldShowButton) {
-                // Show the button
-                button.style.display = 'show'; // or 'block' depending on your layout
-            } else {
-                // Hide the button
-                button.style.display = 'none';
-            }
-        </script> -->
     </main>
 
 </body>
