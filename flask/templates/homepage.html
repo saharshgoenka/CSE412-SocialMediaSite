@@ -146,9 +146,11 @@
     <div id="profile-dropdown" class="dropdown">
         <button onclick="toggleDropdown()" class="profile-button">
             {% if user_details and user_details[5] %}
-                <img id="profile-image" src="{{ url_for('static', filename=user_details[5]) }}" alt="Profile Image" class="profile-image">
+                <img id="profile-image" src="{{ url_for('static', filename=user_details[5]) }}" alt="Profile Image"
+                     class="profile-image">
             {% else %}
-                <img id="profile-image" src="{{ url_for('static', filename='images/profile_picture.jpg') }}" alt="Default Profile Image" class="profile-image">
+                <img id="profile-image" src="{{ url_for('static', filename='images/profile_picture.jpg') }}"
+                     alt="Default Profile Image" class="profile-image">
             {% endif %}
         </button>
         <div id="dropdown-content" class="dropdown-content">
@@ -160,9 +162,14 @@
 
     <div id="tweet-form">
         <h3>Create a New Tweet</h3>
-        <form method="post" action="{{ url_for('createTweet') }}">
+        <!-- Modified form to include file upload -->
+        <form method="post" action="{{ url_for('createTweet') }}" enctype="multipart/form-data">
             <label for="tweet-content">Content:</label>
             <textarea id="tweet-content" name="content" rows="4" cols="50" required></textarea><br>
+
+            <!-- Add input field for file upload -->
+            <label for="image-upload">Upload Image:</label>
+            <input type="file" id="image-upload" name="media_file" accept="image/*"><br>
 
             <input type="submit" value="Tweet">
         </form>
@@ -171,44 +178,53 @@
     <h2>Your Tweets</h2>
     <ul>
         {% for tweet in tweets %}
-        <li>
-            <div style="display: flex; align-items: center;">
-                <strong style="margin-right: 10px;">Username:</strong>
-                <a href="{{ url_for('loadUserProfile', username=tweet[0]) }}">
-                    {{ tweet[0] }}
-                </a>
-            </div>          
-            <div style="font-size: 18px; margin: 10px 0;">
-                <strong>Content:</strong> {{ tweet[2] }}
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                <div>
-                    <!-- Like button -->
-                    <button onclick="likeTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
-                        <img src="{{ url_for('static', filename='images/like_icon2.jpg') }}" alt="Likes Icon" style="width: 20px; height: 20px; margin-right: 5px;">
-                        Like
-                    </button>
-                    <!-- Dislike button -->
-                    <button onclick="dislikeTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
-                        <img src="{{ url_for('static', filename='images/dislike_icon.png') }}" alt="Dislikes Icon" style="width: 20px; height: 20px; margin-left: 5px; margin-right: 5px;">
-                        Dislike
-                    </button>
-                    <!-- Like and Dislike count -->
-                    <span id="likeDislikeCount{{ tweet[1] }}">{{ tweet[3] }}</span>
+            <li>
+                <div style="display: flex; align-items: center;">
+                    <strong style="margin-right: 10px;">Username:</strong>
+                    <a href="{{ url_for('loadUserProfile', username=tweet[0]) }}">
+                        {{ tweet[0] }}
+                    </a>
                 </div>
-                <div>
-                    <!-- Reshare button -->
-                    <button onclick="reshareTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
-                        <img src="{{ url_for('static', filename='images/reshare_icon2.jpg') }}" alt="Reshares Icon" style="width: 25px; height: 25px; margin-right: 5px;">
-                        <span id="reshareCount{{ tweet[1] }}">{{ tweet[4] }}</span>
-                    </button>
+                <div style="font-size: 18px; margin: 10px 0;">
+                    <strong>Content:</strong> {{ tweet[2] }}
                 </div>
-            </div>            
-            <div style="margin-top: 10px;">
-                <a href="{{ url_for('tweet_details', tweet_id=tweet[1], username=tweet[0]) }}">View Comments</a>
-            </div>
-            <hr>
-        </li>
+
+                <!-- Display the image if it exists -->
+            {% if tweet[6] %}
+                <img src="{{ url_for('static', filename=tweet[6]) }}" alt="Tweet Image" style="max-width: 100%;">
+            {% endif %}
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <div>
+                        <!-- Like button -->
+                        <button onclick="likeTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
+                            <img src="{{ url_for('static', filename='images/like_icon2.jpg') }}" alt="Likes Icon"
+                                 style="width: 20px; height: 20px; margin-right: 5px;">
+                            Like
+                        </button>
+                        <!-- Dislike button -->
+                        <button onclick="dislikeTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
+                            <img src="{{ url_for('static', filename='images/dislike_icon.png') }}" alt="Dislikes Icon"
+                                 style="width: 20px; height: 20px; margin-left: 5px; margin-right: 5px;">
+                            Dislike
+                        </button>
+                        <!-- Like and Dislike count -->
+                        <span id="likeDislikeCount{{ tweet[1] }}">{{ tweet[3] }}</span>
+                    </div>
+                    <div>
+                        <!-- Reshare button -->
+                        <button onclick="reshareTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
+                            <img src="{{ url_for('static', filename='images/reshare_icon2.jpg') }}" alt="Reshares Icon"
+                                 style="width: 25px; height: 25px; margin-right: 5px;">
+                            <span id="reshareCount{{ tweet[1] }}">{{ tweet[4] }}</span>
+                        </button>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <a href="{{ url_for('tweet_details', tweet_id=tweet[1], username=tweet[0]) }}">View Comments</a>
+                </div>
+                <hr>
+            </li>
         {% endfor %}
     </ul>
 
@@ -238,7 +254,7 @@
     }
 
     // Handle the error event for the profile image
-    document.getElementById('profile-image').onerror = function() {
+    document.getElementById('profile-image').onerror = function () {
         this.src = "{{ url_for('static', filename='images/profile_picture.jpg') }}";
     };
 
@@ -251,18 +267,18 @@
                 'Content-Type': 'application/json',
             },
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            location.reload();
-            // Update the like count on the front-end
-            document.querySelector(`#likeDislikeCount${tweetId}`).textContent = data.likes;
-        })
-        .catch(error => console.error('Error:', error));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                location.reload();
+                // Update the like count on the front-end
+                document.querySelector(`#likeDislikeCount${tweetId}`).textContent = data.likes;
+            })
+            .catch(error => console.error('Error:', error));
     }
 
     function dislikeTweet(tweetId, username) {
@@ -274,18 +290,18 @@
                 'Content-Type': 'application/json',
             },
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            location.reload();
-            // Update the dislike count on the front-end
-            document.querySelector(`#likeDislikeCount${tweetId}`).textContent = data.likes;
-        })
-        .catch(error => console.error('Error:', error));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                location.reload();
+                // Update the dislike count on the front-end
+                document.querySelector(`#likeDislikeCount${tweetId}`).textContent = data.likes;
+            })
+            .catch(error => console.error('Error:', error));
     }
 
     function reshareTweet(tweetId, username) {
@@ -297,18 +313,18 @@
                 'Content-Type': 'application/json',
             },
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            location.reload();
-            // Update the reshare count on the front-end
-            document.querySelector(`#reshareCount${tweetId}`).textContent = data.reshares;
-        })
-        .catch(error => console.error('Error:', error));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                location.reload();
+                // Update the reshare count on the front-end
+                document.querySelector(`#reshareCount${tweetId}`).textContent = data.reshares;
+            })
+            .catch(error => console.error('Error:', error));
     }
 
 </script>

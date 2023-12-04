@@ -22,10 +22,10 @@ if not os.path.exists(uploads_dir):
 
 def create_db_connection():
     connection = psycopg2.connect(
-        user='enigma',
-        host="/tmp",
-        port="1322",
-        database="enigma"
+        user='postgres',
+        host="localhost",
+        port=5439,
+        database="social_media_data"
     )
 
     return connection
@@ -142,8 +142,20 @@ def homepage():
             cursor.execute("SELECT * FROM Usr WHERE username = %s", (session['username'],))
             user_details = cursor.fetchone()
 
-            # Select all tweets from the Tweet table
-            cursor.execute("SELECT original_username, tweet_id, cntnt, likes, reshares, timestmp FROM Tweet Order By timestmp DESC")
+            # Select all tweets from the Tweet table and join with the Media table
+            cursor.execute("""
+                SELECT 
+                    T.original_username, 
+                    T.tweet_id, 
+                    T.cntnt, 
+                    T.likes, 
+                    T.reshares, 
+                    T.timestmp,
+                    M.media_url
+                FROM Tweet T
+                LEFT JOIN Media M ON T.original_username = M.username AND T.tweet_id = M.tweet_id
+                ORDER BY T.timestmp DESC
+            """)
             tweets = cursor.fetchall()
 
             return render_template('homepage.html', username=session['username'], user_details=user_details,
@@ -160,6 +172,80 @@ def homepage():
     else:
         flash('You must log in first', 'error')
         return redirect(url_for('start_page'))
+
+def save_media_file(file, username, tweet_id):
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+
+        # Store only the relative path in the database
+        media_url = f'uploads/{filename}'
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Insert the media record into the Media table
+            cursor.execute("INSERT INTO Media VALUES (%s, %s, %s)",
+                           (username, tweet_id, media_url))
+            connection.commit()
+
+        except psycopg2.Error as e:
+            print("Error saving media file:", e)
+
+        finally:
+            cursor.close()
+            connection.close()
+
+@app.route('/createTweet', methods=['POST', 'GET'])
+def createTweet():
+    if request.method == 'POST':
+        # request information from form(user input)
+        username = session.get('username')
+        content = request.form['content']
+        likes = 0
+        reshares = 0
+
+        connection = create_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Get the maximum tweet_id for the user
+            cursor.execute("SELECT MAX(tweet_id) FROM Tweet WHERE original_username = %s", (username,))
+            max_tweet_id = cursor.fetchone()[0]
+
+            # Increment tweet_id by 1
+            if max_tweet_id is not None:
+                tweet_id = max_tweet_id + 1
+            else:
+                tweet_id = 0  # if the user has no previous tweets
+
+            # Get current timestamp
+            timestamp = datetime.now()
+
+            # Insert the new tweet into the database
+            cursor.execute("INSERT INTO Tweet VALUES (%s, %s, %s, %s, %s, %s)",
+                           (username, tweet_id, content, likes, reshares, timestamp))
+            connection.commit()
+
+            # Save media file if provided
+            if 'media_file' in request.files:
+                media_file = request.files['media_file']
+                save_media_file(media_file, username, tweet_id)
+                print("works!")
+
+            flash('Tweet created successfully', 'success')
+
+        except psycopg2.Error as e:
+            print("Error creating tweet:", e)
+            flash('Error creating tweet', 'error')
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    return redirect(url_for('homepage'))  # Redirect to the updated homepage route
 
 
 @app.route('/signup', methods=['GET'])
@@ -614,49 +700,6 @@ def lookUpUser(username):
 
     return redirect(url_for('start_page'))
 
-
-@app.route('/createTweet', methods=['POST', 'GET'])
-def createTweet():
-    if request.method == 'POST':
-        # request information from form(user input)
-        username = session.get('username')
-        content = request.form['content']
-        likes = 0
-        reshares = 0
-
-        connection = create_db_connection()
-        cursor = connection.cursor()
-
-        try:
-            # Get the maximum tweet_id for the user
-            cursor.execute("SELECT MAX(tweet_id) FROM Tweet WHERE original_username = %s", (username,))
-            max_tweet_id = cursor.fetchone()[0]
-
-            # Increment tweet_id by 1
-            if max_tweet_id is not None:
-                tweet_id = max_tweet_id + 1
-            else:
-                tweet_id = 0  # if the user has no previous tweets
-
-            # Get current timestamp
-            timestamp = datetime.now()
-
-            # Insert the new tweet into the database
-            cursor.execute("INSERT INTO Tweet VALUES (%s, %s, %s, %s, %s, %s)",
-                           (username, tweet_id, content, likes, reshares, timestamp))
-            connection.commit()
-
-            flash('Tweet created successfully', 'success')
-
-        except psycopg2.Error as e:
-            print("Error creating tweet:", e)
-            flash('Error creating tweet', 'error')
-
-        finally:
-            cursor.close()
-            connection.close()
-
-    return redirect(url_for('homepage'))  # Redirect to the updated homepage route
 
 
 @app.route('/deleteTweet/<int:tweet_id>', methods=['POST', 'GET'])
