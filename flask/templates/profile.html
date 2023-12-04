@@ -24,6 +24,16 @@
             margin: 20px auto;
         }
 
+        .follow-button {
+            background-color: #01b8d4;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
         .profile-container,
         .tweets-container {
             background-color: #fff;
@@ -68,6 +78,10 @@
         .tweet p {
             margin: 0;
         }
+
+        .show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -99,6 +113,9 @@
                     <div style="font-size: 18px; margin: 10px 0;">
                         <strong>Content:</strong> {{ tweet[2] }}
                     </div>
+                    <button id="followButton" onclick="followUser()" class="follow-button">
+                        Follow
+                    </button>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                         <div>
                             <!-- Like count -->
@@ -114,6 +131,22 @@
                 {% endfor %}
             </ul>
         </div>
+
+        <script>
+            const shouldShowButton = true;
+
+            // Get the button element by its id
+            const button = document.getElementById('followButton');
+
+            // Check the boolean value and toggle the button's visibility
+            if (shouldShowButton) {
+                // Show the button
+                button.style.display = 'show'; // or 'block' depending on your layout
+            } else {
+                // Hide the button
+                button.style.display = 'none';
+            }
+        </script>
     </main>
 
 </body>

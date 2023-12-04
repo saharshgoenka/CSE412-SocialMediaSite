@@ -139,6 +139,16 @@
         .show {
             display: block;
         }
+
+        .follow-button {
+            background-color: #01b8d4;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -177,7 +187,11 @@
                 <a href="{{ url_for('loadUserProfile', username=tweet[0]) }}">
                     {{ tweet[0] }}
                 </a>
-            </div>            
+                <!-- Adding a follow button, incomplete, going to make appear and disappear -->
+                <button onclick="followUser()" class="follow-button">
+                    Follow
+                </button>  
+            </div>          
             <div style="font-size: 18px; margin: 10px 0;">
                 <strong>Content:</strong> {{ tweet[2] }}
             </div>
