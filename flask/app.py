@@ -24,16 +24,14 @@ def create_db_connection():
     connection = psycopg2.connect(
         user='enigma',
         host="/tmp",
-        port="1321",
+        port="1322",
         database="enigma"
     )
 
     return connection
 
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 @app.route('/')
 def start_page():
@@ -70,7 +68,7 @@ def login():
         cursor = connection.cursor()
 
         try:
-            cursor.execute("SELECT username, password FROM Usr WHERE username = %s", (username,))
+            cursor.execute("SELECT username, password, display_name FROM Usr WHERE username = %s", (username,))
             user = cursor.fetchone()
 
             errors = {'username': True, 'password': True}
@@ -82,6 +80,7 @@ def login():
                     errors['password'] = False
 
             if not any(errors.values()):
+                session['displayname'] = user[2]
                 session['username'] = username
                 return redirect(url_for('homepage'))  # Change to the new route
             else:
@@ -96,7 +95,6 @@ def login():
             connection.close()
 
     return render_template('login.html')
-
 
 # Add a new route for the homepage
 @app.route('/homepage')
@@ -400,7 +398,21 @@ def reshareTweet(tweet_id, username):
         existing_reshare = cursor.fetchone()
 
         if existing_reshare:
-            return jsonify({'error': 'You have already reshared this tweet'}), 400
+            cursor.execute("DELETE FROM Reshare WHERE resharing_username = %s AND tweeting_username = %s AND tweet_id = %s",
+                           (session['username'], username, tweet_id))
+            connection.commit()
+
+            # Update the reshare count in the database
+            cursor.execute("UPDATE Tweet SET reshares = reshares - 1 WHERE tweet_id = %s AND original_username = %s",
+                            (tweet_id, username))
+            connection.commit()
+
+            # Retrieve the updated reshare count
+            cursor.execute("SELECT reshares FROM Tweet WHERE tweet_id = %s AND original_username = %s",
+                       (tweet_id, username))
+            updated_reshares = cursor.fetchone()[0]
+            
+            return jsonify({'reshares': updated_reshares})
 
         # Insert the reshare record into the database
         cursor.execute("INSERT INTO Reshare VALUES (%s, %s, %s)",

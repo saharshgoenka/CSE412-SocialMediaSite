@@ -156,7 +156,7 @@
         </div>
     </div>
 
-    <h1>Welcome to the Homepage, {{ username }}!</h1>
+    <h1>Welcome to the Homepage, {{ session['displayname'] }}!</h1>
 
     <div id="tweet-form">
         <h3>Create a New Tweet</h3>
@@ -167,8 +167,6 @@
             <input type="submit" value="Tweet">
         </form>
     </div>
-
-    <div id="error-message" style="color: red;"></div>
 
     <h2>Your Tweets</h2>
     <ul>
@@ -275,12 +273,6 @@
             // Update the reshare count on the front-end
             document.querySelector(`#reshareCount${tweetId}`).textContent = data.reshares;
         })
-        .catch(error => {
-            console.error('Error:', error);
-
-            // Display the error message on the front-end
-            document.getElementById('error-message').textContent = 'Error resharing tweet. You may have already reshared this tweet.';
-        });
     }
 </script>
 
