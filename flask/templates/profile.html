@@ -25,20 +25,20 @@
         }
 
         .follow-button {
-            background-color: white;
-            color: #1DA1F2;
+            background-color: #1DA1F2;
+            color: #fff;
             padding: 8px 16px;
-            border: 2px solid #1DA1F2;
+            border: none;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
         .unfollow-button {
-            background-color: #1DA1F2;
-            color: #fff;
+            background-color: white;
+            color: #1DA1F2;
             padding: 8px 16px;
-            border: none;
+            border: 2px solid #1DA1F2;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -104,17 +104,29 @@
         <div class="profile-container">
             <div class="profile-header">
                 <img id="profile-image" src="{{ url_for('static', filename=user_details[5]) }}" alt="Profile Image" class="profile-image">
-                <div class="profile-info">
+                <div class="profile-info" style="text-align: center;">
                     <h1>{{ user_details[4] }}</h1>
                     <p>@{{ user_details[0] }}</p>
+                    <div style="display: inline-block;">
+                        {% if follower_details['showButton'] %}
+                            <button onclick="followUser('{{ user_details[0] }}')" class="follow-button">
+                                Follow
+                            </button>
+                        {% endif %}
+        
+                        {% if not follower_details['showButton'] %}
+                            <button  onclick="unFollowUser('{{ user_details[0] }}')" class="unfollow-button">
+                                Following
+                            </button>
+                        {% endif %}
+                    </div>
                     <p>Account Creation Date: {{ user_details[2] }}</p>
                     <p>Email: {{ user_details[3] }}</p>
                     <p>Display Name: {{ user_details[4] }}</p>
                     <p>Birthday: {{ user_details[6] }}</p>
                 </div>
             </div>
-        </div>
-
+        </div>        
         <div class="tweets-container">
             <h2 style="text-align: center;">Your Tweets</h2>
             <ul>
@@ -123,17 +135,6 @@
                     <div style="font-size: 18px; margin: 10px 0;">
                         <strong>Content:</strong> {{ tweet[2] }}
                     </div>
-                    {% if follower_details['showButton'] %}
-                        <button onclick="followUser('{{ tweet[0] }}')" class="follow-button">
-                            Follow
-                        </button>
-                    {% endif %}
-
-                    {% if not follower_details['showButton'] %}
-                        <button  onclick="unFollowUser('{{ tweet[0] }}')" class="unfollow-button">
-                            Following
-                        </button>
-                    {% endif %}
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                         <div>
                             <!-- Like count -->

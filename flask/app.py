@@ -22,10 +22,10 @@ if not os.path.exists(uploads_dir):
 
 def create_db_connection():
     connection = psycopg2.connect(
-        user='mitsuakifukuzaki',
+        user='enigma',
         host="/tmp",
-        port=5432,
-        database="mitsuakifukuzaki"
+        port="1322",
+        database="enigma"
     )
 
     return connection
