@@ -25,10 +25,10 @@
         }
 
         .follow-button {
-            background-color: #1DA1F2;
-            color: #fff;
+            background-color: white;
+            color: #1DA1F2;
             padding: 8px 16px;
-            border: none;
+            border: 2px solid #1DA1F2;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -38,7 +38,7 @@
             background-color: #1DA1F2;
             color: #fff;
             padding: 8px 16px;
-            border: 2px solid #1DA1F2;
+            border: none;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -124,14 +124,14 @@
                         <strong>Content:</strong> {{ tweet[2] }}
                     </div>
                     {% if follower_details['showButton'] %}
-                        <button onclick="followUser()" class="follow-button">
+                        <button onclick="followUser('{{ follower_details[following_username] }}')" class="follow-button">
                             Follow
                         </button>
                     {% endif %}
 
                     {% if not follower_details['showButton'] %}
-                        <button  onclick="unFollowUser()" class="unfollow-button">
-                            Unfollow
+                        <button  onclick="unFollowUser(follower_details['following_username'])" class="unfollow-button">
+                            Following
                         </button>
                     {% endif %}
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
@@ -149,7 +149,32 @@
                 {% endfor %}
             </ul>
         </div>
-    </main>
 
+        <script>
+            function followUser(following_username) {
+                fetch('/followUser/${following_username}' , {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    location.reload();
+                    // Update the like count on the front-end
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            function unFollowUser(following_username) {
+
+            }
+        </script>
+    </main>
 </body>
 </html>

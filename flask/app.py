@@ -75,9 +75,9 @@ def loadUserProfile(username):
 
         print(len(follower_details))
         if len(follower_details):
-            follower_details = {'showButton' : False}
+            follower_details = {'showButton' : False, 'following_username' : username}
         else:
-            follower_details = {'showButton' : True}
+            follower_details = {'showButton' : True, 'following_username' : username}
         
         print(follower_details)
         return render_template('profile.html', user_details=user_details, tweet_details=tweet_details, follower_details=follower_details)
@@ -533,22 +533,23 @@ def reshareTweet(tweet_id, username):
         cursor.close()
         connection.close()
 
-@app.route('/followUser', methods=['POST', 'GET'])
-def followUser():
+@app.route('/followUser/<string:following_username>', methods=['POST', 'GET'])
+def followUser(following_username):
     if request.method == 'POST':
         # request information from form(user input)
-        follower_user = session.get('username')
-        following_user = request.form['following_user']
+        follower_username = session['username']
 
         connection = create_db_connection()
         cursor = connection.cursor()
 
         try:
             # Update the follow table to add follow tuple
-            cursor.execute("INSERT INTO Follow VALUES (%s, %s)", (follower_user, following_user))
+            cursor.execute("INSERT INTO Follow(follower_username, following_username) VALUES (%s, %s);", (follower_username, following_username))
             connection.commit()
 
             flash('Follow was successful', 'success')
+
+
 
         except psycopg2.Error as e:
             print("Error following user:", e)
@@ -561,12 +562,11 @@ def followUser():
     return redirect(url_for('start_page'))
 
 
-@app.route('/unfollowUser', methods=['POST', 'GET'])
-def unfollowUser():
+@app.route('/unfollowUser/<string:following_username>', methods=['POST', 'GET'])
+def unfollowUser(following_username):
     if request.method == 'POST':
         # request information from form(user input)
-        unfollower_user = session.get('username')
-        unfollowing_user = request.form['unfollowing_user']
+        follower_user = session.get('username')
 
         connection = create_db_connection()
         cursor = connection.cursor()
@@ -574,7 +574,7 @@ def unfollowUser():
         try:
             # Update follow table to remove follow tuplle
             cursor.execute("DELETE FROM Follow follower_username = %s AND following_username = %s",
-                           (unfollower_user, unfollowing_user))
+                           (follower_user, following_username))
             connection.commit()
 
             flash('Unfollow was successful', 'success')
