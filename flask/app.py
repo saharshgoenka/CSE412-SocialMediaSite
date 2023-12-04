@@ -386,6 +386,34 @@ def likeTweet(tweet_id, username):
         cursor.close()
         connection.close()
 
+@app.route('/dislikeTweet/<int:tweet_id>/<string:username>', methods=['POST'])
+def dislikeTweet(tweet_id, username):
+
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Update the dislike count in the database
+        cursor.execute("UPDATE Tweet SET likes = likes - 1 WHERE tweet_id = %s AND original_username = %s",
+                       (tweet_id, username))
+        connection.commit()
+        print("dislikeTweet: dislike count updated")
+
+        # Retrieve the updated like count
+        cursor.execute("SELECT likes FROM Tweet WHERE tweet_id = %s AND original_username = %s",
+                       (tweet_id, username))
+        updated_likes = cursor.fetchone()[0]
+
+        return jsonify({'likes': updated_likes})
+
+    except psycopg2.Error as e:
+        print("Error disliking tweet:", e)
+        return jsonify({'error': 'Error disliking tweet'}), 500
+
+    finally:
+        cursor.close()
+        connection.close()
+
 @app.route('/reshareTweet/<int:tweet_id>/<string:username>', methods=['POST'])
 def reshareTweet(tweet_id, username):
     connection = create_db_connection()

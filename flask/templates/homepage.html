@@ -180,20 +180,27 @@
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                 <div>
-                    <!-- Updated: Like button -->
+                    <!-- Like button -->
                     <button onclick="likeTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
                         <img src="{{ url_for('static', filename='images/like_icon2.jpg') }}" alt="Likes Icon" style="width: 20px; height: 20px; margin-right: 5px;">
-                        <span id="likeCount{{ tweet[1] }}">{{ tweet[3] }}</span>
+                        Like
                     </button>
+                    <!-- Dislike button -->
+                    <button onclick="dislikeTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
+                        <img src="{{ url_for('static', filename='images/dislike_icon.png') }}" alt="Dislikes Icon" style="width: 20px; height: 20px; margin-left: 5px; margin-right: 5px;">
+                        Dislike
+                    </button>
+                    <!-- Like and Dislike count -->
+                    <span id="likeDislikeCount{{ tweet[1] }}">{{ tweet[3] }}</span>
                 </div>
                 <div>
-                    <!-- Updated: Reshare button -->
+                    <!-- Reshare button -->
                     <button onclick="reshareTweet('{{ tweet[1] }}', '{{ tweet[0] }}')">
                         <img src="{{ url_for('static', filename='images/reshare_icon2.jpg') }}" alt="Reshares Icon" style="width: 25px; height: 25px; margin-right: 5px;">
                         <span id="reshareCount{{ tweet[1] }}">{{ tweet[4] }}</span>
                     </button>
                 </div>
-            </div>
+            </div>            
             <div style="margin-top: 10px;">
                 <a href="{{ url_for('tweet_details', tweet_id=tweet[1], username=tweet[0]) }}">View Comments</a>
             </div>
@@ -249,7 +256,29 @@
         })
         .then(data => {
             // Update the like count on the front-end
-            document.querySelector(`#likeCount${tweetId}`).textContent = data.likes;
+            document.querySelector(`#likeDislikeCount${tweetId}`).textContent = data.likes;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function dislikeTweet(tweetId, username) {
+        // Handle the logic for disliking a tweet
+        // Example using fetch API:
+        fetch(`/dislikeTweet/${tweetId}/${username}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Update the like count on the front-end
+            document.querySelector(`#likeDislikeCount${tweetId}`).textContent = data.likes;
         })
         .catch(error => console.error('Error:', error));
     }
