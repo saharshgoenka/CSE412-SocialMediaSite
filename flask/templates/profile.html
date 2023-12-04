@@ -113,9 +113,11 @@
                     <div style="font-size: 18px; margin: 10px 0;">
                         <strong>Content:</strong> {{ tweet[2] }}
                     </div>
-                    <button id="followButton" onclick="followUser()" class="follow-button">
-                        Follow
-                    </button>
+                    {% if follower_details['showButton'] %}
+                        <button id="followButton" onclick="followUser()" class="follow-button">
+                            Follow
+                        </button>
+                    {% endif %}
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                         <div>
                             <!-- Like count -->
@@ -132,8 +134,8 @@
             </ul>
         </div>
 
-        <script>
-            const shouldShowButton = true;
+        <!-- <script>
+            const shouldShowButton = follower_details['showButton'];
 
             // Get the button element by its id
             const button = document.getElementById('followButton');
@@ -146,7 +148,7 @@
                 // Hide the button
                 button.style.display = 'none';
             }
-        </script>
+        </script> -->
     </main>
 
 </body>

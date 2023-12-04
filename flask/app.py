@@ -70,7 +70,17 @@ def loadUserProfile(username):
         cursor.execute("SELECT * FROM Tweet WHERE original_username = %s", (username,))
         tweet_details = cursor.fetchall()
 
-        return render_template('profile.html', user_details=user_details, tweet_details=tweet_details)
+        cursor.execute("SELECT * FROM Follow WHERE follower_username = %s AND following_username = %s", (session["username"], username))
+        follower_details = cursor.fetchall()
+
+        print(len(follower_details))
+        if len(follower_details):
+            follower_details = {'showButton' : False}
+        else:
+            follower_details = {'showButton' : True}
+        
+        print(follower_details)
+        return render_template('profile.html', user_details=user_details, tweet_details=tweet_details, follower_details=follower_details)
 
     except psycopg2.Error as e:
         print("Error fetching user profile data:", e)
