@@ -22,10 +22,10 @@ if not os.path.exists(uploads_dir):
 
 def create_db_connection():
     connection = psycopg2.connect(
-        user='enigma',
-        host="/tmp",
-        port="1322",
-        database="enigma"
+        user='postgres',
+        host="localhost",
+        port=5439,
+        database="social_media_data"
     )
 
     return connection
@@ -182,6 +182,37 @@ def tweet_details(tweet_id, username):
         flash('Error fetching tweet details', 'error')
 
     finally:
+        cursor.close()
+        connection.close()
+
+@app.route('/addComment/<int:tweet_id>/<string:username>', methods=['POST'])
+def addComment(tweet_id, username):
+    commenting_username = session.get('username')
+    comment_content = request.form['comment']  # Updated this line to get the comment content from the form
+
+    createComment(commenting_username, username, tweet_id, comment_content)
+
+    return redirect(url_for('tweet_details', tweet_id=tweet_id, username=username))
+
+def createComment(commenting_username, tweeting_username, tweet_id, comment_content):
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Create current timestamp
+        timestmp_intermediate = datetime.now()
+        timestmp = timestmp_intermediate.strftime("%Y-%m-%d %H:%M:%S")
+
+        # Insert the new comment into the DB
+        cursor.execute(
+            "INSERT INTO Cmmnt(commenting_username, tweeting_username, tweet_id, timestmp, comment_content) VALUES (%s, %s, %s, %s, %s)",
+            (commenting_username, tweeting_username, tweet_id, timestmp, comment_content))
+
+    except psycopg2.Error as e:
+        print("Error:", e)
+    finally:
+        # Commit changes
+        connection.commit()
         cursor.close()
         connection.close()
 

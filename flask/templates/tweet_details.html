@@ -11,7 +11,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             margin: 0;
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f4; /* Light gray background */
@@ -49,6 +48,32 @@
             border: none;
             border-top: 1px solid #ddd;
         }
+
+        #comment-section {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            resize: vertical;
+        }
+
+        button[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px; /* Adjust padding as needed */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
     </style>
 </head>
 <body>
@@ -56,22 +81,36 @@
     <div id="tweet-details">
         <h1>Tweet Details</h1>
         <p><strong>Username:</strong> {{ tweet[0] }}</p>
-        <p><strong>Content:</strong> {{ tweet[1] }}</p>
-        <p><strong>Likes:</strong> {{ tweet[2] }}</p>
-        <p><strong>Reshares:</strong> {{ tweet[3] }}</p>
-        <p><strong>Timestamp:</strong> {{ tweet[4] }}</p>
+        <p><strong>Content:</strong> {{ tweet[2] }}</p>
+        <p><strong>Likes:</strong> {{ tweet[3] }}</p>
+        <p><strong>Reshares:</strong> {{ tweet[4] }}</p>
+        <p><strong>Timestamp:</strong> {{ tweet[5] }}</p>
 
         <h2>Comments</h2>
         <ul>
             {% for comment in comments %}
-            <li>
-                <p><strong>Username:</strong> {{ comment[0] }}</p>
-                <p><strong>Content:</strong> {{ comment[1] }}</p>
-                <p><strong>Timestamp:</strong> {{ comment[2] }}</p>
-                <hr>
-            </li>
+                <li>
+                    <p><strong>Username:</strong> {{ comment[0] }}</p>
+                    <p><strong>Content:</strong> {{ comment[4] }}</p>
+                    <p><strong>Timestamp:</strong> {{ comment[3] }}</p>
+                    <hr>
+                </li>
             {% endfor %}
         </ul>
+    </div>
+
+    <div id="comment-section">
+        <h2>Add Comment</h2>
+        <form method="POST" action="{{ url_for('addComment', tweet_id=tweet[1], username=tweet[0]) }}">
+            <label for="comment">Comment:</label>
+            <textarea id="comment" name="comment" rows="4" cols="50" required></textarea><br>
+            <button type="submit">Post Comment</button>
+        </form>
+    </div>
+
+    <!-- Back button -->
+    <div id="back-button">
+        <a href="{{ url_for('homepage') }}">Back to Homepage</a>
     </div>
 </div>
 </body>
