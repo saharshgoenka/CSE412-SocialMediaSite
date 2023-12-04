@@ -124,13 +124,13 @@
                         <strong>Content:</strong> {{ tweet[2] }}
                     </div>
                     {% if follower_details['showButton'] %}
-                        <button onclick="followUser('{{ follower_details[following_username] }}')" class="follow-button">
+                        <button onclick="followUser('{{ tweet[0] }}')" class="follow-button">
                             Follow
                         </button>
                     {% endif %}
 
                     {% if not follower_details['showButton'] %}
-                        <button  onclick="unFollowUser(follower_details['following_username'])" class="unfollow-button">
+                        <button  onclick="unFollowUser('{{ tweet[0] }}')" class="unfollow-button">
                             Following
                         </button>
                     {% endif %}
@@ -151,28 +151,24 @@
         </div>
 
         <script>
-            function followUser(following_username) {
-                fetch('/followUser/${following_username}' , {
+            function followUser(username) {
+                fetch(`/followUser/${username}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
                 })
                 .then(data => {
                     location.reload();
-                    // Update the like count on the front-end
                 })
                 .catch(error => console.error('Error:', error));
             }
 
             function unFollowUser(following_username) {
-
+                fetch(`/unfollowUser/${following_username}`, {
+                    method: 'POST',
+                })
+                .then(data => {
+                    location.reload();
+                })
+                .catch(error => console.error('Error:', error));
             }
         </script>
     </main>

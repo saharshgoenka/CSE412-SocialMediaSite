@@ -533,23 +533,15 @@ def reshareTweet(tweet_id, username):
         cursor.close()
         connection.close()
 
-@app.route('/followUser/<string:following_username>', methods=['POST', 'GET'])
-def followUser(following_username):
-    if request.method == 'POST':
-        # request information from form(user input)
-        follower_username = session['username']
-
+@app.route('/followUser/<string:username>', methods=['POST', 'GET'])
+def followUser(username):
+    if 'username' in session:
         connection = create_db_connection()
         cursor = connection.cursor()
 
         try:
-            # Update the follow table to add follow tuple
-            cursor.execute("INSERT INTO Follow(follower_username, following_username) VALUES (%s, %s);", (follower_username, following_username))
+            cursor.execute("INSERT INTO Follow VALUES (%s, %s)", (session['username'], username))
             connection.commit()
-
-            flash('Follow was successful', 'success')
-
-
 
         except psycopg2.Error as e:
             print("Error following user:", e)
@@ -559,35 +551,25 @@ def followUser(following_username):
             cursor.close()
             connection.close()
 
-    return redirect(url_for('start_page'))
-
 
 @app.route('/unfollowUser/<string:following_username>', methods=['POST', 'GET'])
 def unfollowUser(following_username):
     if request.method == 'POST':
-        # request information from form(user input)
-        follower_user = session.get('username')
-
+       if 'username' in session:
         connection = create_db_connection()
         cursor = connection.cursor()
 
         try:
-            # Update follow table to remove follow tuplle
-            cursor.execute("DELETE FROM Follow follower_username = %s AND following_username = %s",
-                           (follower_user, following_username))
+            cursor.execute("DELETE FROM Follow WHERE follower_username = %s AND following_username = %s", (session['username'], following_username))
             connection.commit()
 
-            flash('Unfollow was successful', 'success')
-
         except psycopg2.Error as e:
-            print("Error unfollowing user:", e)
-            flash('Error unfollowing user', 'error')
+            print("Error following user:", e)
+            flash('Error following user', 'error')
 
         finally:
             cursor.close()
             connection.close()
-
-    return redirect(url_for('start_page'))
 
 
 @app.route('/lookUpUser/<string:username>', methods=['POST', 'GET'])
