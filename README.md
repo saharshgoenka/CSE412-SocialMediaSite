@@ -29,6 +29,8 @@ TwitFace is an academic project created for CSE 412 - Database Management. The g
 3. Copy the file path to this newly created folder. Ensure the folder name is within the copied path.
 4. Enter the following commands into your terminal:
 
+`export PATH="/Library/PostgreSQL/15/bin:${PATH}"`
+
 `cd `
 
 `export PGPORT=5432`
@@ -56,6 +58,15 @@ TwitFace is an academic project created for CSE 412 - Database Management. The g
 
 `psql -d $USER`
 `SELECT * From Usr;`
+
+### Additional Setup
+1. Navigate to app.py found in the flask folder of the REPO
+2. Change the database accessing fields found on lines 25-28 to:
+
+- user={username found in the terminal history}
+- host='/tmp'
+- port=5432
+- database={same as user}
 
 # Walkthrough and Navigation
 
