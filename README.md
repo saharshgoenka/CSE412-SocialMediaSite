@@ -14,8 +14,8 @@ Entering a valid username and password combo will allow access to the homepage.
 
 ## Home Page
 
-```markdown
 **Homepage Features:**
+```markdown
 - Create tweets with text or text and images.
 - Hyperlinked usernames to profile pages.
 - View Comments hyperlinks to the comments page.
