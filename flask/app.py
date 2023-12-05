@@ -23,9 +23,10 @@ if not os.path.exists(uploads_dir):
 def create_db_connection():
     connection = psycopg2.connect(
         user='postgres',
+        password="Ant0n1ng",
         host="localhost",
-        port=5439,
-        database="social_media_data"
+        port=5432,
+        database="CSE412_Project"
     )
 
     return connection
@@ -702,7 +703,7 @@ def lookUpUser(username):
 
 
 
-@app.route('/deleteTweet/<int:tweet_id>', methods=['POST', 'GET'])
+@app.route('/deleteTweet/<int:tweet_id>', methods=['POST'])
 def deleteTweet(tweet_id):
     if request.method == 'POST':
         username = session.get('username')
@@ -712,7 +713,7 @@ def deleteTweet(tweet_id):
 
         try:
             # Check if the tweet belongs to the logged-in user
-            cursor.execute("SELECT username FROM Tweet WHERE tweet_id = %s", (tweet_id,))
+            cursor.execute("SELECT original_username FROM Tweet WHERE tweet_id = %s", (tweet_id,))
             tweet_owner = cursor.fetchone()
 
             if tweet_owner and tweet_owner[0] == username:
@@ -732,7 +733,7 @@ def deleteTweet(tweet_id):
             cursor.close()
             connection.close()
 
-    return redirect(url_for('start_page'))
+    return redirect(url_for('homepage'))
 
 
 # Add a new route for the settings page
@@ -805,6 +806,41 @@ def updateSettings():
             connection.close()
 
     return redirect(url_for('settings_page'))
+
+@app.route('/deleteComment', methods=['POST'])
+def deleteComment():
+    commenting_username = session.get('username')
+    timestmp = request.form.get('timestmp')
+    timestmp_datetime = datetime.strptime(timestmp, '%Y-%m-%d %H:%M:%S')
+
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Check if the comment belongs to the logged-in user
+        cursor.execute("SELECT commenting_username FROM Cmmnt WHERE commenting_username = %s AND timestmp = %s",
+                       (commenting_username, timestmp_datetime))
+        comment_owner = cursor.fetchone()
+
+        if comment_owner and comment_owner[0] == commenting_username:
+            # Delete the comment
+            cursor.execute("DELETE FROM Cmmnt WHERE commenting_username = %s AND timestmp = %s",
+                           (commenting_username, timestmp_datetime))
+            connection.commit()
+
+            flash('Comment deleted successfully', 'success')
+        else:
+            flash('Unauthorized to delete this comment', 'error')
+
+    except psycopg2.Error as e:
+        print("Error deleting comment:", e)
+        flash('Error deleting comment', 'error')
+
+    finally:
+        cursor.close()
+        connection.close()
+    
+    return redirect(url_for('homepage'))
 
 
 if __name__ == '__main__':
