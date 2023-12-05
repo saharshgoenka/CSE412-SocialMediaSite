@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - Twitter Clone</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0;
+            background-color: #000; /* Pitch black background */
+            color: #fff; /* White text color */
         }
 
         header {
-            background-color: #1DA1F2;
+            background-color: #1DA1F2; /* Twitter blue */
             color: #fff;
             padding: 10px;
             text-align: center;
@@ -24,8 +26,9 @@
             margin: 20px auto;
         }
 
-        .follow-button {
-            background-color: #1DA1F2;
+        .follow-button,
+        .back-button {
+            background-color: #1DA1F2; /* Twitter blue */
             color: #fff;
             padding: 8px 16px;
             border: none;
@@ -35,10 +38,10 @@
         }
 
         .unfollow-button {
-            background-color: white;
-            color: #1DA1F2;
+            background-color: #fff; /* White background */
+            color: #1DA1F2; /* Twitter blue text color */
             padding: 8px 16px;
-            border: 2px solid #1DA1F2;
+            border: 2px solid #1DA1F2; /* Twitter blue border */
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -46,11 +49,12 @@
 
         .profile-container,
         .tweets-container {
-            background-color: #fff;
+            background-color: #141415; /* R:20 G:20 B:21 */
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Light shadow for a card-like effect */
             padding: 20px;
             margin-bottom: 20px;
+            color: #fff; /* White text color */
         }
 
         .profile-header {
@@ -68,6 +72,7 @@
 
         .profile-info {
             text-align: center;
+            color: #f0f0f0; /* A shade of white */
         }
 
         .profile-info h1 {
@@ -92,8 +97,16 @@
         .show {
             display: block;
         }
+
+        .back-button {
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
+
 <body>
 
     <header>
@@ -104,7 +117,7 @@
         <div class="profile-container">
             <div class="profile-header">
                 <img id="profile-image" src="{{ url_for('static', filename=user_details[5]) }}" alt="Profile Image" class="profile-image">
-                <div class="profile-info" style="text-align: center;">
+                <div class="profile-info">
                     <h1>{{ user_details[4] }}</h1>
                     <p>@{{ user_details[0] }}</p>
                     <div style="display: inline-block;">
@@ -113,9 +126,9 @@
                                 Follow
                             </button>
                         {% endif %}
-        
+
                         {% if not follower_details['showButton'] %}
-                            <button  onclick="unFollowUser('{{ user_details[0] }}')" class="unfollow-button">
+                            <button onclick="unFollowUser('{{ user_details[0] }}')" class="unfollow-button">
                                 Following
                             </button>
                         {% endif %}
@@ -126,12 +139,12 @@
                     <p>Birthday: {{ user_details[6] }}</p>
                 </div>
             </div>
-        </div>        
+        </div>
         <div class="tweets-container">
             <h2 style="text-align: center;">Your Tweets</h2>
             <ul>
                 {% for tweet in tweet_details %}
-                <li>        
+                <li>
                     <div style="font-size: 18px; margin: 10px 0;">
                         <strong>Content:</strong> {{ tweet[2] }}
                     </div>
@@ -144,12 +157,14 @@
                             <!-- Reshare count -->
                             <span>Reshares: <span id="reshareCount{{ tweet[1] }}">{{ tweet[4] }}</span></span>
                         </div>
-                    </div>                     
+                    </div>
                     <hr>
                 </li>
                 {% endfor %}
             </ul>
         </div>
+
+        <button class="back-button" onclick="window.location.href='{{ url_for('homepage') }}'">Back to Homepage</button>
 
         <script>
             function followUser(username) {
@@ -174,4 +189,5 @@
         </script>
     </main>
 </body>
+
 </html>

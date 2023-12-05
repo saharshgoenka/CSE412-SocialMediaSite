@@ -7,7 +7,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            background-color: #141414; /* Updated to pitch black */
+            color: white; /* Text color changed to white */
             margin: 0;
             padding: 0;
             display: flex;
@@ -17,9 +18,8 @@
             height: 100vh;
         }
 
-        h1 {
-            color: #333;
-            margin-top: 20px;
+        h1, h3 {
+            color: white; /* Text color changed to white */
         }
 
         p {
@@ -27,13 +27,15 @@
             text-align: center;
         }
 
-        form {
-            background-color: #fff;
+        form, #delete-account {
+            background-color: #1a1a1a; /* Updated to R:20 G:20 B:21 dark color */
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 300px;
             max-width: 100%;
+            text-align: center; /* Center align form and delete-account */
+            margin-bottom: 20px; /* Add margin-bottom for separation */
         }
 
         label {
@@ -48,6 +50,8 @@
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
+            background-color: #1a1a1a; /* Input background color */
+            color: white; /* Input text color */
         }
 
         input[type="submit"] {
@@ -60,29 +64,33 @@
             background-color: #00cbea;
         }
 
-        #delete-account {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Add this line */
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            max-width: 100%;
+        #back-btn {
+            margin-bottom: 20px; /* Add margin-bottom for separation */
         }
 
-        #delete-account h3 {
-            color: #333;
+        #back-btn button {
+            background-color: #1DA1F2;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #back-btn button:hover {
+            background-color: #00cbea;
         }
 
         #delete-account p {
             margin-bottom: 10px;
+            color: white; /* Text color changed to white */
         }
 
         #delete-account input[type="submit"] {
-            background-color: #ff4d4d;
+            background-color: #ff4d4d !important; /* Set to red with !important */
+            color: white;
+            cursor: pointer;
         }
 
         #delete-account input[type="submit"]:hover {
@@ -91,38 +99,35 @@
     </style>
 </head>
 <body>
-<h1>User Settings</h1>
+    <h1>User Settings</h1>
 
-<p>Edit your settings here:</p>
+    <p>Edit your settings here:</p>
 
-<div id="back-btn">
-        <a href="{{ url_for('homepage') }}">Back to Homepage</a>
+    <div id="back-btn">
+        <button onclick="window.location.href='{{ url_for('homepage') }}'">Back to Homepage</button>
     </div>
 
-<form method="post" action="{{ url_for('updateSettings') }}">
-    <label for="new_password">New Password:</label>
-    <input type="password" id="new_password" name="new_password" required>
-    <br>
+    <form method="post" action="{{ url_for('updateSettings') }}">
+        <label for="new_password">New Password:</label>
+        <input type="password" id="new_password" name="new_password" required>
+        <br>
 
-    <label for="new_email">New Email:</label>
-    <input type="email" id="new_email" name="new_email" required>
-    <br>
+        <label for="new_email">New Email:</label>
+        <input type="email" id="new_email" name="new_email" required>
+        <br>
 
-    <label for="new_display_name">New Display Name:</label>
-    <input type="text" id="new_display_name" name="new_display_name" required>
-    <br>
+        <label for="new_display_name">New Display Name:</label>
+        <input type="text" id="new_display_name" name="new_display_name" required>
+        <br>
 
-    <!-- Add more input fields as needed for other settings -->
+        <!-- Add more input fields as needed for other settings -->
 
-    <input type="submit" value="Save Changes">
-</form>
+        <input type="submit" value="Save Changes">
+    </form>
 
-<div id="delete-account">
-    <h3>Delete Account</h3>
+    <p>Are you sure you want to delete your account? This action cannot be undone.</p>
     <form method="post" action="{{ url_for('deleteAccount') }}">
-        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
         <input type="submit" value="Delete Account">
     </form>
-</div>
 </body>
 </html>

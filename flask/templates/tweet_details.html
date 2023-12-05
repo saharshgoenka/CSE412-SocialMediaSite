@@ -1,4 +1,3 @@
-<!-- templates/tweet_details.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +12,8 @@
             align-items: center;
             margin: 0;
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4; /* Light gray background */
+            background-color: #000; /* Pitch black background */
+            color: #fff; /* White text color */
         }
 
         #content-container {
@@ -21,13 +21,13 @@
             max-width: 800px;
             width: 100%;
             padding: 20px;
-            background-color: #fff; /* White background */
+            background-color: #141415; /* R:20 G:20 B:21 */
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for a card-like effect */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Light shadow for a card-like effect */
         }
 
         h1, h2 {
-            color: #333;
+            color: #fff; /* White text color */
         }
 
         ul {
@@ -38,26 +38,32 @@
         li {
             margin-bottom: 20px;
             padding: 15px;
-            border: 1px solid #ddd;
+            border: 1px solid #555; /* Dark gray border */
             border-radius: 8px;
-            background-color: #fff;
+            background-color: #333; /* Dark background */
         }
 
         hr {
             margin: 10px 0;
             border: none;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid #555; /* Dark gray border */
         }
 
         #comment-section {
             margin-top: 20px;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid #555; /* Dark gray border */
             padding-top: 20px;
         }
 
         textarea {
             width: 100%;
             resize: vertical;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #555; /* Dark gray border */
+            border-radius: 4px;
+            background-color: #333; /* Dark background */
+            color: #fff; /* White text color */
         }
 
         button[type="submit"] {
@@ -74,6 +80,24 @@
             background-color: #00cbea;
         }
 
+        /* Back button styles */
+        #back-button {
+            margin-top: 20px; /* Add margin-top for separation */
+        }
+
+        #back-button button {
+            background-color: #1DA1F2;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #back-button button:hover {
+            background-color: #00cbea;
+        }
     </style>
 </head>
 <body>
@@ -118,7 +142,7 @@
 
     <!-- Back button -->
     <div id="back-button">
-        <a href="{{ url_for('homepage') }}">Back to Homepage</a>
+        <button onclick="window.location.href='{{ url_for('homepage') }}'">Back to Homepage</button>
     </div>
 
     <!-- delete tweet button -->
