@@ -23,10 +23,9 @@ if not os.path.exists(uploads_dir):
 def create_db_connection():
     connection = psycopg2.connect(
         user='postgres',
-        password="Ant0n1ng",
         host="localhost",
-        port=5432,
-        database="CSE412_Project"
+        port=5439,
+        database="social_media_data"
     )
 
     return connection
@@ -56,7 +55,7 @@ def test():
         return jsonify(formatted_users)
     except psycopg2.Error as e:
         print("Error:", e)
-        flash('Error', 'error')
+        # flash('Error', 'error')
 
 @app.route('/loadUserProfile/<string:username>')
 def loadUserProfile(username):
@@ -85,7 +84,7 @@ def loadUserProfile(username):
 
     except psycopg2.Error as e:
         print("Error fetching user profile data:", e)
-        flash('Error fetching user profile data', 'error')
+        # flash('Error fetching user profile data', 'error')
 
     finally:
         cursor.close()
@@ -106,18 +105,14 @@ def login():
             cursor.execute("SELECT username, password, display_name FROM Usr WHERE username = %s", (username,))
             user = cursor.fetchone()
 
-            errors = {'username': True, 'password': True}
-
             if user:
-                errors['username'] = False
-
                 if user[1] == password:
-                    errors['password'] = False
-
-            if not any(errors.values()):
-                session['displayname'] = user[2]
-                session['username'] = username
-                return redirect(url_for('homepage'))  # Change to the new route
+                    session['displayname'] = user[2]
+                    session['username'] = username
+                    # flash('Login successful', 'success')
+                    return redirect(url_for('homepage'))
+                else:
+                    flash('Invalid username or password', 'error')
             else:
                 flash('Invalid username or password', 'error')
 
@@ -236,7 +231,7 @@ def createTweet():
                 save_media_file(media_file, username, tweet_id)
                 print("works!")
 
-            flash('Tweet created successfully', 'success')
+            # flash('Tweet created successfully', 'success')
 
         except psycopg2.Error as e:
             print("Error creating tweet:", e)
@@ -344,7 +339,7 @@ def createUser():
                     profile_picture_path = f'uploads/{filename}'
 
                 else:
-                    flash('Invalid file format for profile picture. Allowed formats: png, jpg, jpeg, gif', 'error')
+                    # flash('Invalid file format for profile picture. Allowed formats: png, jpg, jpeg, gif', 'error')
                     return redirect(url_for('signup'))
 
             else:
@@ -469,7 +464,7 @@ def editPfp():
             cursor.execute("UPDATE Usr SET profile_picture = %s WHERE username = %s", (new_pfp_file_path, username))
             connection.commit()
 
-            flash('Profile Picture updated successfully', 'success')
+            # flash('Profile Picture updated successfully', 'success')
 
         except psycopg2.Error as e:
             print("Error updating profile picture:", e)
@@ -632,7 +627,7 @@ def followUser(username):
 
         except psycopg2.Error as e:
             print("Error following user:", e)
-            flash('Error following user', 'error')
+            # flash('Error following user', 'error')
 
         finally:
             cursor.close()
@@ -652,7 +647,7 @@ def unfollowUser(following_username):
 
         except psycopg2.Error as e:
             print("Error following user:", e)
-            flash('Error following user', 'error')
+            # flash('Error following user', 'error')
 
         finally:
             cursor.close()
@@ -693,7 +688,7 @@ def lookUpUser(username):
 
     except psycopg2.Error as e:
         print("Error looking up user:", e)
-        flash('User does not exist', 'error')
+        # flash('User does not exist', 'error')
 
     finally:
         cursor.close()
@@ -721,9 +716,9 @@ def deleteTweet(tweet_id):
                 cursor.execute("DELETE FROM Tweet WHERE tweet_id = %s", (tweet_id,))
                 connection.commit()
 
-                flash('Tweet deleted successfully', 'success')
-            else:
-                flash('Unauthorized to delete this tweet', 'error')
+                # flash('Tweet deleted successfully', 'success')
+            # else:
+                # flash('Unauthorized to delete this tweet', 'error')
 
         except psycopg2.Error as e:
             print("Error deleting tweet:", e)
@@ -795,11 +790,11 @@ def updateSettings():
                            (new_password, new_email, new_display_name, username))
             connection.commit()
 
-            flash('Settings updated successfully', 'success')
+            # flash('Settings updated successfully', 'success')
 
         except psycopg2.Error as e:
             print("Error updating settings:", e)
-            flash('Error updating settings', 'error')
+            # flash('Error updating settings', 'error')
 
         finally:
             cursor.close()
@@ -828,7 +823,7 @@ def deleteComment():
                            (commenting_username, timestmp_datetime))
             connection.commit()
 
-            flash('Comment deleted successfully', 'success')
+            # flash('Comment deleted successfully', 'success')
         else:
             flash('Unauthorized to delete this comment', 'error')
 
