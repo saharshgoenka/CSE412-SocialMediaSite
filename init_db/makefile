@@ -1,6 +1,6 @@
 OUTPUTS = $(sort $(wildcard outputs/*.txt))
 QUESTIONS = $(patsubst outputs/%.txt,%,$(OUTPUTS))
-SRC_DIRECTORY = PASTE THE PATH TO init_db FOLDER
+SRC_DIRECTORY = /Users/mitsuakifukuzaki/Desktop/Hub/Programming/School/412/CSE412-SocialMediaSite/init_db
 MAKEFILE_PATH = $(SRC_DIRECTORY)/makefile
 ROOT = $(MAKEFILE_PATH)
 
@@ -19,13 +19,11 @@ path:
 setup_postgres:
 	@echo "Creating tables"
 	psql -d $(USER) -q -f $(SRC_DIRECTORY)/setup.sql
-	@echo "Successfully created tables"
 
 
 clean_postgres:
 	@echo "emptying database"
 	psql -d $(USER) -q -f $(SRC_DIRECTORY)/clean.sql
-	@echo "Successfully deleted data"
 
 
 
