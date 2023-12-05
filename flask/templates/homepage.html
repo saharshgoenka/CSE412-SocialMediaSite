@@ -12,7 +12,8 @@
             align-items: center;
             margin: 0;
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4; /* Light gray background */
+            background-color: #000; /* Pitch black background */
+            color: #fff; /* White text color */
         }
 
         #content-container {
@@ -20,17 +21,17 @@
             max-width: 800px;
             width: 100%;
             padding: 20px;
-            background-color: #fff; /* White background */
+            background-color: #141415; /* R:20 G:20 B:21 */
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for a card-like effect */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Light shadow for a card-like effect */
         }
 
-        h1, h2, h3 {
-            color: #333;
+        h1, h2, h3, p {
+            color: #fff; /* White text color */
         }
 
-        p {
-            color: #555;
+        h1 {
+            margin: 0;
         }
 
         #tweet-form, ul {
@@ -44,7 +45,7 @@
         label {
             display: block;
             margin-bottom: 5px;
-            color: #333;
+            color: #fff; /* White text color */
         }
 
         textarea {
@@ -52,8 +53,10 @@
             padding: 8px;
             margin-bottom: 10px;
             box-sizing: border-box;
-            border: 1px solid #ccc;
+            border: 1px solid #555; /* Dark gray border */
             border-radius: 4px;
+            background-color: #333; /* Dark background */
+            color: #fff; /* White text color */
         }
 
         input[type="submit"] {
@@ -77,15 +80,15 @@
         li {
             margin-bottom: 20px;
             padding: 15px;
-            border: 1px solid #ddd;
+            border: 1px solid #555; /* Dark gray border */
             border-radius: 8px;
-            background-color: #fff;
+            background-color: #333; /* Dark background */
         }
 
         hr {
             margin: 10px 0;
             border: none;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid #555; /* Dark gray border */
         }
 
         a {
@@ -108,12 +111,20 @@
             background-color: transparent;
             border: none;
             cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .profile-image-container {
+            border: 2px solid #fff; /* White border */
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 10px;
         }
 
         .profile-image {
-            border-radius: 50%;
-            width: 80px; /* Adjust the width as needed */
-            height: 80px; /* Adjust the height as needed */
+            width: 120px; /* Adjust the width as needed */
+            height: 120px; /* Adjust the height as needed */
+            object-fit: cover;
         }
 
         .dropdown-content {
@@ -139,6 +150,36 @@
         .show {
             display: block;
         }
+
+        /* Custom styling for the file input */
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-button {
+            border: none;
+            color: #fff;
+            background-color: #1DA1F2;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-input-button:hover {
+            background-color: #01b8d4;
+        }
+
+        .file-input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -146,11 +187,13 @@
     <div id="profile-dropdown" class="dropdown">
         <button onclick="toggleDropdown()" class="profile-button">
             {% if user_details and user_details[5] %}
-                <img id="profile-image" src="{{ url_for('static', filename=user_details[5]) }}" alt="Profile Image"
-                     class="profile-image">
+                <div class="profile-image-container">
+                    <img id="profile-image" src="{{ url_for('static', filename=user_details[5]) }}" alt="Profile Image" class="profile-image">
+                </div>
             {% else %}
-                <img id="profile-image" src="{{ url_for('static', filename='images/profile_picture.jpg') }}"
-                     alt="Default Profile Image" class="profile-image">
+                <div class="profile-image-container">
+                    <img id="profile-image" src="{{ url_for('static', filename='images/profile_picture.jpg') }}" alt="Default Profile Image" class="profile-image">
+                </div>
             {% endif %}
         </button>
         <div id="dropdown-content" class="dropdown-content">
@@ -159,7 +202,6 @@
     </div>
 
     <h1>Welcome to the Homepage, {{ session['displayname'] }}!</h1>
-
     <div id="tweet-form">
         <h3>Create a New Tweet</h3>
         <!-- Modified form to include file upload -->
@@ -167,9 +209,12 @@
             <label for="tweet-content">Content:</label>
             <textarea id="tweet-content" name="content" rows="4" cols="50" required></textarea><br>
 
-            <!-- Add input field for file upload -->
-            <label for="image-upload">Upload Image:</label>
-            <input type="file" id="image-upload" name="media_file" accept="image/*"><br>
+            <!-- Add input field for file upload with custom styling -->
+            <div class="file-input-container">
+                <label for="image-upload" class="file-input-button">Choose Image</label>
+                <input type="file" id="image-upload" name="media_file" accept="image/*" class="file-input">
+            </div>
+            <br>
 
             <input type="submit" value="Tweet">
         </form>
@@ -179,6 +224,8 @@
     <ul>
         {% for tweet in tweets %}
             <li>
+
+
                 <div style="display: flex; align-items: center;">
                     <strong style="margin-right: 10px;">Username:</strong>
                     <a href="{{ url_for('loadUserProfile', username=tweet[0]) }}">
