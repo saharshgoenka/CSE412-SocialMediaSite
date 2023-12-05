@@ -1,4 +1,25 @@
-# CSE412 Final Project-Twitface
+# Twitface User Manual
+
+# Setup
+### Cloning the Repository
+1. Create a folder in an easily accessible location. Name it whatever you like.
+2. Open your terminal
+3. Change directories until you are inside the folder you have just created. Recall cd {directory}
+4. Once inside of the folder, run the following command:
+
+`git clone https://github.com/saharshgoenka/CSE412-SocialMediaSite.git`
+
+5. Confirm that the cloning was successfully ran by executing the following command:
+
+`ls`
+- You should see the name 'CSE412-SocialMediaSite'
+
+### Downloading Dependencies
+1. Enter 'CSE412-SocialMediaSite' by running:
+
+`cd CSE412-SocialMediaSite
+3. Once inside, run the following command:
+
 
 # Walkthrough and Navigation
 
