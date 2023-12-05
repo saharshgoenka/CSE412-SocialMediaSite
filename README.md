@@ -45,7 +45,7 @@ The homepage features a series of introductory messages, followed by a "Create T
 
 ## Profile Page
 ![Profile Page Screenshot](screenshots/Profile-Page.png)
-Clicking on the username hyperlink on the homepage redirects users to the profile page. The profile page is structured with user details followed by the tweets of the specific user. Additionally, a follow/unfollow button is prominently displayed. If the user was previously following this profile, it will indicate "following"; otherwise, the button will display "follow." By clicking the follow button, the user becomes a follower of the displayed profile, and the button transforms into "following." To unfollow, users simply click the button again, reverting it back to "Follow."
+Clicking on the username hyperlink on the homepage redirects users to the profile page. The profile page is structured with user details followed by the tweets of the specific user. Additionally, a follow/unfollow button is prominently displayed. If the user was previously following this profile, it will indicate "following"; otherwise, the button will display "follow." By clicking the follow button, the user becomes a follower of the displayed profile, and the button transforms into "following." To unfollow, users simply click the button again, reverting it back to "Follow." The "Shared Tweets" section shows all tweets that the user has posted and reshared.
 
 ## Comments Page
 ![Comments Page Screenshot](screenshots/Comments-Page.png)
