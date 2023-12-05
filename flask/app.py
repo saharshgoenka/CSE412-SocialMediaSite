@@ -22,11 +22,11 @@ if not os.path.exists(uploads_dir):
 
 def create_db_connection():
     connection = psycopg2.connect(
-        user='postgres',
-        host="localhost",
-        port=5439,
-        database="social_media_data"
-)
+        user='enigma',
+        host="/tmp",
+        port="1322",
+        database="enigma"
+    )
 
     return connection
 
@@ -67,7 +67,26 @@ def loadUserProfile(username):
         cursor.execute("SELECT * FROM Usr WHERE username = %s", (username,))
         user_details = cursor.fetchone()
 
-        cursor.execute("SELECT * FROM Tweet WHERE original_username = %s", (username,))
+        sql_query = """
+        WITH UserTweets AS (
+            SELECT *
+            FROM tweet
+            WHERE original_username = %s
+        ),
+        UserReshares AS (
+            SELECT *
+            FROM tweet t
+            WHERE (t.original_username, t.tweet_id) IN (
+                SELECT r.tweeting_username, r.tweet_id
+                FROM reshare r
+                WHERE r.resharing_username = %s
+            )
+        )
+
+        SELECT * FROM UserTweets UNION SELECT * FROM UserReshares;
+        """
+
+        cursor.execute(sql_query, (username, username))
         tweet_details = cursor.fetchall()
 
         cursor.execute("SELECT * FROM Follow WHERE follower_username = %s AND following_username = %s", (session["username"], username))
