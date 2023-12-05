@@ -9,8 +9,8 @@
     <title>Sign Up</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000;
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,17 +18,18 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            color: #fff;
         }
 
         h1 {
-            color: #333;
+            color: #fff;
         }
 
         form {
-            background-color: #fff;
+            background-color: #333;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
             width: 300px;
             max-width: 100%;
         }
@@ -36,6 +37,7 @@
         label {
             display: block;
             margin-bottom: 8px;
+            color: #fff;
         }
 
         input {
@@ -43,27 +45,31 @@
             padding: 8px;
             margin-bottom: 16px;
             box-sizing: border-box;
-            border: 1px solid #ccc;
+            border: 1px solid #1DA1F2;
             border-radius: 4px;
+            background-color: #333;
+            color: #fff;
         }
 
         input[type="submit"] {
             background-color: #1DA1F2;
             color: white;
             cursor: pointer;
+            border: none;
         }
 
         input[type="submit"]:hover {
-            background-color: #00cbea;
+            background-color: #01b8d4;
         }
 
         p {
             margin-top: 20px;
             text-align: center;
+            color: #fff;
         }
 
         a {
-            color: #007BFF;
+            color: #1DA1F2;
             text-decoration: none;
         }
 
@@ -73,28 +79,28 @@
     </style>
 </head>
 <body>
-<h1>Sign Up</h1>
-<form method="POST" action="{{ url_for('createUser') }}" enctype="multipart/form-data">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br>
+    <h1>Sign Up</h1>
+    <form method="POST" action="{{ url_for('createUser') }}" enctype="multipart/form-data">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
 
-    <label for="display_name">Display Name:</label>
-    <input type="text" id="display_name" name="display_name" required><br>
+        <label for="display_name">Display Name:</label>
+        <input type="text" id="display_name" name="display_name" required><br>
 
-    <label for="pfp_file">Profile Picture:</label>
-    <input type="file" id="pfp_file" name="pfp_file" accept="image/*" required><br>
+        <label for="pfp_file">Profile Picture:</label>
+        <input type="file" id="pfp_file" name="pfp_file" accept="image/*" required><br>
 
-    <label for="birthday">Birthday:</label>
-    <input type="date" id="birthday" name="birthday" required><br>
+        <label for="birthday">Birthday:</label>
+        <input type="date" id="birthday" name="birthday" required><br>
 
-    <input type="submit" value="Sign Up">
-</form>
-<p>Already have an account? <a href="{{ url_for('start_page') }}">Login</a></p>
+        <input type="submit" value="Sign Up">
+    </form>
+    <p>Already have an account? <a href="{{ url_for('start_page') }}">Login</a></p>
 </body>
 </html>
