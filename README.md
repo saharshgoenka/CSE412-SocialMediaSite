@@ -5,12 +5,12 @@ TwitFace is an academic project created for CSE 412, Database Management. The go
 ### Cloning the Repository
 1. Create a folder in an easily accessible location. Name it whatever you like.
 2. Open your terminal
-3. Change directories until you are inside the folder you have just created. Recall cd {directory}
+3. Change directories until inside the folder you just created. Recall cd {directory}
 4. Once inside of the folder, run the following command:
 
 `git clone https://github.com/saharshgoenka/CSE412-SocialMediaSite.git`
 
-5. Confirm that the cloning was successfully ran by executing the following command:
+5. Confirm that the cloning was successfully run by executing the following command:
 
 `ls`
 - You should see the name 'CSE412-SocialMediaSite'
@@ -18,9 +18,44 @@ TwitFace is an academic project created for CSE 412, Database Management. The go
 ### Downloading Dependencies
 1. Enter 'CSE412-SocialMediaSite' by running:
 
-`cd CSE412-SocialMediaSite
-3. Once inside, run the following command:
+`cd CSE412-SocialMediaSite`
+2. Once inside, run the following command:
 
+`pip3 install --user -r dependencies.txt`
+
+### Setting up the Database
+1. Change directories back to the original folder you created.
+2. Create a new folder. Name it something fitting for a database. e.g. "DatabaseFolder"
+3. Copy the file path to this newly created folder. Ensure the folder name is within the copied path.
+4. Enter the following commands into your terminal:
+
+`cd `
+
+`export PGPORT=5432`
+
+`export PGHOST=/tmp`
+
+`initdb {PASTE THE COPIED PATH, remove curly braces}`
+
+`pg_ctl -D {PASTE FOLDER PATH} -o '-k /tmp' start`
+
+`createdb $USER`
+
+`cd CSE412-SocialMediaSite`
+
+5. Open up the REPO on Visual Studio Code
+6. Navigate to the makefile stored in init_db
+7. Change the following line:
+
+`SRC_DIRECTORY = COPY PASTE PATH TO init_db`
+
+8. Save the file
+9. In your terminal, change directories to the init_db folder
+10. Run make setup_postgres
+11. Confirm that the database was successfully loaded by running the following commands:
+
+`psql -d $USER`
+`SELECT * From Usr;`
 
 # Walkthrough and Navigation
 
