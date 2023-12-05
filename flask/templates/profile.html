@@ -121,6 +121,8 @@
                     <h1>{{ user_details[4] }}</h1>
                     <p>@{{ user_details[0] }}</p>
                     <div style="display: inline-block;">
+
+                        {% if session['username'] != user_details[0] %}
                         {% if follower_details['showButton'] %}
                             <button onclick="followUser('{{ user_details[0] }}')" class="follow-button">
                                 Follow
@@ -132,6 +134,8 @@
                                 Following
                             </button>
                         {% endif %}
+                        {% endif %}
+
                     </div>
                     <p>Account Creation Date: {{ user_details[2] }}</p>
                     <p>Email: {{ user_details[3] }}</p>

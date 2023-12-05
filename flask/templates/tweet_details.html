@@ -108,7 +108,7 @@
             <p><strong>Content:</strong> {{ tweet[2] }}</p>
             <p><strong>Likes:</strong> {{ tweet[3] }}</p>
             <p><strong>Reshares:</strong> {{ tweet[4] }}</p>
-            <p><strong>Timestamp:</strong> {{ tweet[5] }}</p>
+            <p><strong>Timestamp:</strong> {{ tweet[5].strftime('%Y-%m-%d %H:%M:%S') }}</p>
 
             <h2>Comments</h2>
             <ul>
