@@ -2,7 +2,7 @@
 
 # Walkthrough and Navigation
 
-Once the setup is complete, the user can run the application by going into the flask folder and typing ```bash python3 app.py```. The user can then navigate to “127.0.0.1:5000” on any browser where they can start interacting with the application.
+Once the setup is complete, the user can run the application by going into the flask folder and typing ```python3 app.py```. The user can then navigate to ```127.0.0.1:5000``` on any browser where they can start interacting with the application.
 
 ## Sign Up Page
 
