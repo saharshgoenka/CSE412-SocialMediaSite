@@ -30,11 +30,17 @@ TwitFace is an academic project created for CSE 412, Database Management. The go
 4. Enter the following commands into your terminal:
 
 `cd `
+
 `export PGPORT=5432`
+
 `export PGHOST=/tmp`
+
 `initdb {PASTE THE COPIED PATH, remove curly braces}`
+
 `pg_ctl -D {PASTE FOLDER PATH} -o '-k /tmp' start`
+
 `createdb $USER`
+
 `cd CSE412-SocialMediaSite`
 
 5. Open up the REPO on Visual Studio Code
