@@ -727,17 +727,13 @@ def deleteTweet(tweet_id):
 
         try:
             # Check if the tweet belongs to the logged-in user
-            cursor.execute("SELECT original_username FROM Tweet WHERE tweet_id = %s", (tweet_id,))
-            tweet_owner = cursor.fetchone()
+            # Delete the tweet
+            cursor.execute("DELETE FROM Tweet WHERE original_username = %s AND tweet_id = %s", (session['username'], tweet_id))
+            connection.commit()
 
-            if tweet_owner and tweet_owner[0] == username:
-                # Delete the tweet
-                cursor.execute("DELETE FROM Tweet WHERE original_username = %s AND tweet_id = %s", (username, tweet_id))
-                connection.commit()
-
-                # flash('Tweet deleted successfully', 'success')
+            # flash('Tweet deleted successfully', 'success')
             # else:
-                # flash('Unauthorized to delete this tweet', 'error')
+            # flash('Unauthorized to delete this tweet', 'error')
 
         except psycopg2.Error as e:
             print("Error deleting tweet:", e)
