@@ -22,10 +22,17 @@ if not os.path.exists(uploads_dir):
 
 def create_db_connection():
     connection = psycopg2.connect(
+<<<<<<< HEAD
         user='postgres',
         host="localhost",
         port=5439,
         database="social_media_data"
+=======
+        user='mitsuakifukuzaki',
+        host="/tmp",
+        port="5432",
+        database="mitsuakifukuzaki"
+>>>>>>> 571146e9 (Fixed deleteTweet)
     )
 
     return connection
@@ -291,7 +298,7 @@ def createComment(commenting_username, tweeting_username, tweet_id, comment_cont
     cursor = connection.cursor()
 
     try:
-        # Create current timestamp
+        # Create current timestamp  and format it
         timestmp_intermediate = datetime.now()
         timestmp = timestmp_intermediate.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -713,7 +720,7 @@ def deleteTweet(tweet_id):
 
             if tweet_owner and tweet_owner[0] == username:
                 # Delete the tweet
-                cursor.execute("DELETE FROM Tweet WHERE tweet_id = %s", (tweet_id,))
+                cursor.execute("DELETE FROM Tweet WHERE original_username = %s AND tweet_id = %s", (username, tweet_id))
                 connection.commit()
 
                 # flash('Tweet deleted successfully', 'success')
