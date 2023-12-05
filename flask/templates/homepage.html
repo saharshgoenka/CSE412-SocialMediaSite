@@ -181,6 +181,28 @@
             cursor: pointer;
         }
     </style>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add event listener to the file input
+            const fileInput = document.getElementById('image-upload');
+            fileInput.addEventListener('change', handleImageSelection);
+        });
+
+        function handleImageSelection() {
+            const fileInput = document.getElementById('image-upload');
+            const buttonLabel = document.querySelector('.file-input-button');
+
+            // Check if a file is selected
+            if (fileInput.files.length > 0) {
+                // Update the button text with the selected file name
+                buttonLabel.textContent = fileInput.files[0].name;
+            } else {
+                // No file selected, revert to default text
+                buttonLabel.textContent = 'Choose Image';
+            }
+        }
+    </script>
 </head>
 <body>
 <div id="content-container">
@@ -202,16 +224,15 @@
     </div>
 
     <h1>Welcome to the Homepage, {{ session['displayname'] }}!</h1>
-    <div id="tweet-form">
+<div id="tweet-form">
         <h3>Create a New Tweet</h3>
-        <!-- Modified form to include file upload -->
         <form method="post" action="{{ url_for('createTweet') }}" enctype="multipart/form-data">
             <label for="tweet-content">Content:</label>
             <textarea id="tweet-content" name="content" rows="4" cols="50" required></textarea><br>
 
-            <!-- Add input field for file upload with custom styling -->
             <div class="file-input-container">
-                <label for="image-upload" class="file-input-button">Choose Image</label>
+                <!-- Update the class to include 'file-input-label' for easier selection -->
+                <label for="image-upload" class="file-input-button file-input-label">Choose Image</label>
                 <input type="file" id="image-upload" name="media_file" accept="image/*" class="file-input">
             </div>
             <br>
