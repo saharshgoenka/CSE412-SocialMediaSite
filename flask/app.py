@@ -26,7 +26,7 @@ def create_db_connection():
         host="localhost",
         port=5439,
         database="social_media_data"
-    )
+)
 
     return connection
 
