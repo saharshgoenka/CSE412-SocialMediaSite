@@ -1,6 +1,7 @@
 OUTPUTS = $(sort $(wildcard outputs/*.txt))
 QUESTIONS = $(patsubst outputs/%.txt,%,$(OUTPUTS))
-MAKEFILE_PATH = /Users/mitsuakifukuzaki/Desktop/Hub/Programming/School/412/CSE412-SocialMediaSite/init_db/makefile
+SRC_DIRECTORY = PASTE THE PATH TO init_db FOLDER
+MAKEFILE_PATH = $(SRC_DIRECTORY)/makefile
 ROOT = $(MAKEFILE_PATH)
 
 all: path $(QUESTIONS)
@@ -16,12 +17,16 @@ path:
 	@mkdir -p tmp
 
 setup_postgres:
-	@echo "creating tables"
-	psql -d $(USER) -q -f /Users/mitsuakifukuzaki/Desktop/Hub/Programming/School/412/CSE412-SocialMediaSite/init_db/setup.sql
+	@echo "Creating tables"
+	psql -d $(USER) -q -f $(SRC_DIRECTORY)/setup.sql
+	@echo "Successfully created tables"
+
 
 clean_postgres:
-	@echo "dropping tables"
-	psql -d $(USER) -q -f /Users/mitsuakifukuzaki/Desktop/Hub/Programming/School/412/CSE412-SocialMediaSite/init_db/clean.sql
+	@echo "emptying database"
+	psql -d $(USER) -q -f $(SRC_DIRECTORY)/clean.sql
+	@echo "Successfully deleted data"
+
 
 
 .PHONY: setup_postgres
