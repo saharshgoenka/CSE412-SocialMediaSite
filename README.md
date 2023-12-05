@@ -14,7 +14,7 @@ Entering a valid username and password combo will allow access to the homepage.
 
 ## Home Page
 
-The homepage features a series of introductory messages, followed by a "Create Tweet" box. Upon entering tweet content and clicking "Tweet," a tweet is generated. The tweet content may consist of text alone or a combination of text and an image, which can be inserted using the "Choose Image" option. Below the tweet creation box, the database displays all tweets. Each tweet is structured with the username as a blue hyperlink leading to the profile page, and "View Comments" as a blue hyperlink leading to the comments page. Additionally, each tweet includes a count, allowing users to increase or decrease it by pressing the like or dislike buttons. The reshare button enables users to reshare or unshare a tweet with a single click. The content of each tweet is displayed prominently in the middle, and if an image is attached, it is included in the content.
+The homepage features a series of introductory messages, followed by a "Create Tweet" box. Upon entering tweet content and clicking "Tweet," a tweet is generated. The tweet content may consist of text alone or a combination of text and an image, which can be inserted using the "Choose Image" option. Below the tweet creation box, the database displays all tweets. Each tweet is structured with the username as a blue hyperlink leading to the profile page, and "View Comments" as a blue hyperlink leading to the comments page. Additionally, each tweet includes a count, allowing users to increase or decrease it by pressing the like or dislike buttons. The reshare button enables users to reshare or unshare a tweet with a single click. The content of each tweet is displayed prominently in the middle, and if an image is attached, it is included in the content. At the very bottom are two hyperlinks "Settings" and "Logout". Clicking logout will lead to the user getting logged out. Thus, the user will be kicked from the home page back to login page. Clicking the settings hyperlink will lead to a settings page.
 
 ## Profile Page
 
@@ -22,4 +22,8 @@ Clicking on the username hyperlink on the homepage redirects users to the profil
 
 ## Comments Page
 
-Clicking "View Comments" on the homepage directs users to the comments page. This page displays the tweet from the homepage that led to it, along with all comments on that tweet. Each comment includes a username, content, and timestamp of posting. Below the comments, a text box allows users to enter comment content and post it by clicking "Post Comment."
+Clicking "View Comments" on the homepage directs users to the comments page. This page displays the tweet from the homepage that led to it, along with all comments on that tweet. Each comment includes a username, content, timestamp of when it was posted and a delete comment button. Pressing delete comment will allow the user to delete a comment if the user owns it. If the user does not won the comment that button will not be shown. Below the comments, a text box allows users to enter comment content and post it by clicking "Post Comment". Lastly, there is a delete tweet button at the very button. If the user owns the tweet then pressing delete tweet will delete the tweet and all comments associated with it.
+
+## Settings Page
+
+The settings page allows the useer to edit password, email and display_name. Pressing "Save Changes" will save these changes. There is also a "Delete Account" button. Pressing that will lead to entire usr deletion, all data related to the usr will be purged.
