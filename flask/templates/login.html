@@ -90,26 +90,38 @@
         a:hover {
             text-decoration: underline;
         }
+
+
     </style>
 </head>
 
 <body>
-    <div id="logo-container">
-        <img id="logo" src="static/images/twitface.png" alt="TwitFace Logo">
-        <h1 class="twitface-text">TwitFace</h1>
-    </div>
+<div id="logo-container">
+    <img id="logo" src="static/images/twitface.png" alt="TwitFace Logo">
+    <h1 class="twitface-text">TwitFace</h1>
+</div>
 
-    <form method="post" action="{{ url_for('login') }}">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
+<form method="post" action="{{ url_for('login') }}">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br>
 
-        <input type="submit" value="Login">
-    </form>
+    <input type="submit" value="Login">
+</form>
 
-    <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+<p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li class="flash-message">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
 </body>
 
 </html>
