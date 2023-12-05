@@ -22,10 +22,17 @@ if not os.path.exists(uploads_dir):
 
 def create_db_connection():
     connection = psycopg2.connect(
+<<<<<<< HEAD
         user='postgres',
         host="localhost",
         port=5439,
         database="social_media_data"
+=======
+        user='mitsuakifukuzaki',
+        host="/tmp",
+        port="5432",
+        database="mitsuakifukuzaki"
+>>>>>>> 571146e9 (Fixed deleteTweet)
     )
 
     return connection
@@ -713,7 +720,7 @@ def deleteTweet(tweet_id):
 
             if tweet_owner and tweet_owner[0] == username:
                 # Delete the tweet
-                cursor.execute("DELETE FROM Tweet WHERE original_username = % AND tweet_id = %s", (username, tweet_id))
+                cursor.execute("DELETE FROM Tweet WHERE original_username = %s AND tweet_id = %s", (username, tweet_id))
                 connection.commit()
 
                 # flash('Tweet deleted successfully', 'success')
