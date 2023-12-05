@@ -807,5 +807,41 @@ def updateSettings():
 
     return redirect(url_for('settings_page'))
 
+@app.route('/deleteComment', methods=['POST'])
+def deleteComment():
+    commenting_username = session.get('username')
+    timestmp = request.form.get('timestmp')
+    timestmp_datetime = datetime.strptime(timestmp, '%Y-%m-%d %H:%M:%S')
+
+    connection = create_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Check if the comment belongs to the logged-in user
+        cursor.execute("SELECT commenting_username FROM Cmmnt WHERE commenting_username = %s AND timestmp = %s",
+                       (commenting_username, timestmp_datetime))
+        comment_owner = cursor.fetchone()
+
+        if comment_owner and comment_owner[0] == commenting_username:
+            # Delete the comment
+            cursor.execute("DELETE FROM Cmmnt WHERE commenting_username = %s AND timestmp = %s",
+                           (commenting_username, timestmp_datetime))
+            connection.commit()
+
+            flash('Comment deleted successfully', 'success')
+        else:
+            flash('Unauthorized to delete this comment', 'error')
+
+    except psycopg2.Error as e:
+        print("Error deleting comment:", e)
+        flash('Error deleting comment', 'error')
+
+    finally:
+        cursor.close()
+        connection.close()
+    
+    return redirect(url_for('homepage'))
+
+
 if __name__ == '__main__':
     app.run()
