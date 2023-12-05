@@ -291,7 +291,7 @@ def createComment(commenting_username, tweeting_username, tweet_id, comment_cont
     cursor = connection.cursor()
 
     try:
-        # Create current timestamp
+        # Create current timestamp  and format it
         timestmp_intermediate = datetime.now()
         timestmp = timestmp_intermediate.strftime("%Y-%m-%d %H:%M:%S")
 
