@@ -713,7 +713,7 @@ def deleteTweet(tweet_id):
 
             if tweet_owner and tweet_owner[0] == username:
                 # Delete the tweet
-                cursor.execute("DELETE FROM Tweet WHERE tweet_id = %s", (tweet_id,))
+                cursor.execute("DELETE FROM Tweet WHERE original_username = % AND tweet_id = %s", (username, tweet_id))
                 connection.commit()
 
                 # flash('Tweet deleted successfully', 'success')
