@@ -94,34 +94,34 @@ CREATE TABLE Follow (
 -- ++TABLE POPULATION START ++
 -- Populating Usr Table
 INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday)
-VALUES ('alice_123', 'pass123', '2023-11-11', 'alice123@example.com', 'Alice', 'pfp_fpath', '2005-03-15');
+VALUES ('alice_123', 'pass123', '2023-11-11', 'alice123@example.com', 'Alice', 'uploads/Saharsh-Cat.png', '2005-03-15');
 
 INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday)
-VALUES ('bob_rider', 'securePass', '2023-11-14', 'bob.rider@example.com', 'Bob', 'pfp_fpath', '2008-07-22');
+VALUES ('bob_rider', 'securePass', '2023-11-14', 'bob.rider@example.com', 'Bob', 'images/profile_picture.jpg', '2008-07-22');
 
 INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday)
-VALUES ('charlie_blue', 'random123', '2023-11-18', 'charlie.blue@example.com', 'Charlie', 'pfp_fpath', '2002-11-09');
+VALUES ('charlie_blue', 'random123', '2023-11-18', 'charlie.blue@example.com', 'Charlie', 'images/profile_picture.jpg', '2002-11-09');
 
 INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday)
-VALUES ('diana_rose', 'pass_diana', '2023-11-20', 'diana.rose@example.com', 'Diana', 'pfp_fpath', '2007-04-18');
+VALUES ('diana_rose', 'pass_diana', '2023-11-20', 'diana.rose@example.com', 'Diana', 'images/profile_picture.jpg', '2007-04-18');
 
 INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday)
-VALUES ('edward23', 'edPass', '2023-11-23', 'edward_23@example.com', 'Edward', 'pfp_fpath', '2004-09-27');
+VALUES ('edward23', 'ePass', '2023-11-23', 'edward_23@example.com', 'Edward', 'images/profile_picture.jpg', '2004-09-27');
 
 INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday)
-VALUES ('fiona_g', 'fiona_pass', '2023-11-25', 'fiona.g@example.com', 'Fiona', 'pfp_fpath', '2006-01-12');
+VALUES ('fiona_g', 'fiona_pass', '2023-11-25', 'fiona.g@example.com', 'Fiona', 'images/profile_picture.jpg', '2006-01-12');
 
 INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday)
-VALUES ('george45', 'george_pass', '2023-11-28', 'george45@example.com', 'George', 'pfp_fpath', '2009-08-05');
+VALUES ('george45', 'george_pass', '2023-11-28', 'george45@example.com', 'George', 'images/profile_picture.jpg', '2009-08-05');
 
 INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday)
-VALUES ('hannah.green', 'hannah_pass', '2023-12-01', 'hannah.green@example.com', 'Hannah', 'pfp_fpath', '2003-06-30');
+VALUES ('hannah.green', 'hannah_pass', '2023-12-01', 'hannah.green@example.com', 'Hannah', 'uploads/Mitsu-Post.jpeg', '2003-06-30');
 
 INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday)
-VALUES ('isaac98', 'isaac_pass', '2023-12-05', 'isaac98@example.com', 'Isaac', 'pfp_fpath', '2001-02-14');
+VALUES ('isaac98', 'isaac_pass', '2023-12-05', 'isaac98@example.com', 'Isaac', 'uploads/Hotpot.png', '2001-02-14');
 
 INSERT INTO Usr (username, password, account_creation_date, email, display_name, profile_picture, birthday)
-VALUES ('julia_music', 'julia_pass', '2023-12-08', 'julia.music@example.com', 'Julia', 'pfp_fpath', '2000-10-08');
+VALUES ('julia_music', 'julia_pass', '2023-12-08', 'julia.music@example.com', 'Julia', 'uploads/Mitsu-Cat.jpeg', '2000-10-08');
 
 -- Populating Tweet Table
 -- Alice's tweets
@@ -258,8 +258,14 @@ INSERT INTO Cmmnt (commenting_username, tweeting_username, tweet_id, timestmp, c
 VALUES ('isaac98', 'hannah.green', 2, '2023-11-26 07:50:10', 'Your second tweet sounds like a fantastic language-learning journey.');
 
 -- Populating Media Table
--- INSERT INTO Media (username, tweet_id, media_url)
--- VALUES ('username1', 1, 'fpath to a file');
+INSERT INTO Media (username, tweet_id, media_url)
+VALUES ('bob_rider', 1, '/images/Saharsh-Post.jpeg');
+
+INSERT INTO Media (username, tweet_id, media_url)
+VALUES ('alice_123', 2, '/images/coffee.jpeg');
+
+INSERT INTO Media (username, tweet_id, media_url)
+VALUES ('isaac98', 1, 'uploads/pic1.jpeg');
 
 -- Populating Follow Table
 -- Random Follow Queries

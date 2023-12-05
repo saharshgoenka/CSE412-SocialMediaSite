@@ -1,6 +1,6 @@
 OUTPUTS = $(sort $(wildcard outputs/*.txt))
 QUESTIONS = $(patsubst outputs/%.txt,%,$(OUTPUTS))
-SRC_DIRECTORY = /Users/mitsuakifukuzaki/Desktop/Hub/Programming/School/412/CSE412-SocialMediaSite/init_db
+SRC_DIRECTORY = COPY PASTE PATH TO init_db
 MAKEFILE_PATH = $(SRC_DIRECTORY)/makefile
 ROOT = $(MAKEFILE_PATH)
 

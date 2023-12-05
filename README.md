@@ -1,4 +1,5 @@
 # Twitface User Manual
+TwitFace is an academic project created for CSE 412, Database Management. The goal of this application is to provide users with a platform on which they may interact with other users across the globe and create their own social networks. Users may post, comment, follow, reshare, and like other user's content.
 
 # Setup
 ### Cloning the Repository
