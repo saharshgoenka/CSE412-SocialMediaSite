@@ -101,58 +101,58 @@
     </style>
 </head>
 <body>
-<div id="content-container">
-    <div id="tweet-details">
-        <h1>Tweet Details</h1>
-        <p><strong>Username:</strong> {{ tweet[0] }}</p>
-        <p><strong>Content:</strong> {{ tweet[2] }}</p>
-        <p><strong>Likes:</strong> {{ tweet[3] }}</p>
-        <p><strong>Reshares:</strong> {{ tweet[4] }}</p>
-        <p><strong>Timestamp:</strong> {{ tweet[5] }}</p>
+    <div id="content-container">
+        <div id="tweet-details">
+            <h1>Tweet Details</h1>
+            <p><strong>Username:</strong> {{ tweet[0] }}</p>
+            <p><strong>Content:</strong> {{ tweet[2] }}</p>
+            <p><strong>Likes:</strong> {{ tweet[3] }}</p>
+            <p><strong>Reshares:</strong> {{ tweet[4] }}</p>
+            <p><strong>Timestamp:</strong> {{ tweet[5] }}</p>
 
-        <h2>Comments</h2>
-        <ul>
-            {% for comment in comments %}
-                <li>
-                    <p><strong>Username:</strong> {{ comment[0] }}</p>
-                    <p><strong>Content:</strong> {{ comment[4] }}</p>
-                    <p><strong>Timestamp:</strong> {{ comment[3] }}</p>
+            <h2>Comments</h2>
+            <ul>
+                {% for comment in comments %}
+                    <li>
+                        <p><strong>Username:</strong> {{ comment[0] }}</p>
+                        <p><strong>Content:</strong> {{ comment[4] }}</p>
+                        <p><strong>Timestamp:</strong> {{ comment[3] }}</p>
 
-                    <!-- Delete comment button -->
-            {% if session['username'] == comment[0] %}
-            <form method="POST" action="{{ url_for('deleteComment', timestmp=comment[3]) }}">
-                <input type="hidden" name="timestmp" value="{{ comment[3] }}">
-                <button type="submit" onclick="return confirm('Are you sure you want to delete this comment?')">Delete Comment</button>
-            </form>
+                        <!-- Delete comment button -->
+                        {% if session['username'] == comment[0] %}
+                            <form method="POST" action="{{ url_for('deleteComment', timestmp=comment[3]) }}">
+                                <input type="hidden" name="timestmp" value="{{ comment[3] }}">
+                                <button type="submit" onclick="return confirm('Are you sure you want to delete this comment?')">Delete Comment</button>
+                            </form>
+                        {% endif %}
+                        <hr>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- delete tweet button -->
+        {% if session['username'] == tweet[0] %}
+            <div id="delete-tweet-button">
+                <form method="POST" action="{{ url_for('deleteTweet', tweet_id=tweet[1]) }}">
+                    <button type="submit" onclick="return confirm('Are you sure you want to delete this tweet?')">Delete Tweet</button>
+                </form>
+            </div>
         {% endif %}
-                    <hr>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
 
-    <div id="comment-section">
-        <h2>Add Comment</h2>
-        <form method="POST" action="{{ url_for('addComment', tweet_id=tweet[1], username=tweet[0]) }}">
-            <label for="comment">Comment:</label>
-            <textarea id="comment" name="comment" rows="4" cols="50" required></textarea><br>
-            <button type="submit">Post Comment</button>
-        </form>
-    </div>
+        <div id="comment-section">
+            <h2>Add Comment</h2>
+            <form method="POST" action="{{ url_for('addComment', tweet_id=tweet[1], username=tweet[0]) }}">
+                <label for="comment">Comment:</label>
+                <textarea id="comment" name="comment" rows="4" cols="50" required></textarea><br>
+                <button type="submit">Post Comment</button>
+            </form>
+        </div>
 
-    <!-- Back button -->
-    <div id="back-button">
-        <button onclick="window.location.href='{{ url_for('homepage') }}'">Back to Homepage</button>
+        <!-- Back button -->
+        <div id="back-button">
+            <button onclick="window.location.href='{{ url_for('homepage') }}'">Back to Homepage</button>
+        </div>
     </div>
-
-    <!-- delete tweet button -->
-    {% if session['username'] == tweet[0] %}
-    <div id="delete-tweet-button">
-        <form method="POST" action="{{ url_for('deleteTweet', tweet_id=tweet[1]) }}">
-            <button type="submit" onclick="return confirm('Are you sure you want to delete this tweet?')">Delete Tweet</button>
-        </form>
-    </div>
-{% endif %}
-</div>
 </body>
 </html>
